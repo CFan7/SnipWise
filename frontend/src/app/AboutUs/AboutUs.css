@@ -1,0 +1,47 @@
+.about-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    text-align: left;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: #333;
+  }
+  
+  .about-title {
+    font-size: 3em;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  
+  .team-member {
+    display: flex;
+    align-items: center;
+    margin: 20px 0;
+  }
+  
+  .team-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    margin-right: 20px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    object-fit: cover;
+  }
+    
+  .team-info {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .team-info h2 {
+    font-size: 1.8em;
+    font-weight: 600;
+    margin: 0;
+  }
+  
+  .team-info p {
+    font-size: 1.2em;
+    color: #666;
+    margin: 5px 0 0;
+  }
+  
