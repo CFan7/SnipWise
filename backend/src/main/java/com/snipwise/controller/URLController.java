@@ -1,14 +1,9 @@
 package com.snipwise.controller;
 
-import com.snipwise.pojo.Client;
-import com.snipwise.pojo.Client_DTO;
 import com.snipwise.pojo.URL;
 import com.snipwise.repository.BigtableRepository;
-import com.snipwise.repository.ClientRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
