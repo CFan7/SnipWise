@@ -44,4 +44,45 @@
     color: #666;
     margin: 5px 0 0;
   }
+
+  .mission-section {
+    margin: 30px auto;
+    padding: 10px 0;
+    gap: 20px;
+  }
   
+  .mission-section h2 {
+    font-size: 2em;
+    color: #2855d8;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .mission-section p {
+    font-size: 1.8em;
+    color: #555;
+    line-height: 1.6;
+    margin: 5px auto 40px;
+    text-align: left;
+  }
+  
+  .founder-title {
+    font-size: 2em;
+    color: #2855d8;
+    font-weight: bold;
+    margin-top: 40px;
+    margin-bottom: 20px;
+  }
+  
+  .contact-title {
+    font-size: 2em;
+    color: #2855d8;
+    font-weight: bold;
+    margin-top: 100px;
+  }
+
+  .contact-info {
+    font-size: 1.8em;
+    color: #2855d8;
+    margin-bottom: 100px;
+  }

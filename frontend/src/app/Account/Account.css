@@ -1,0 +1,23 @@
+/* src/pages/Account.css */
+.account-container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  .account-container h2 {
+    font-size: 2em;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  .account-container p {
+    font-size: 1.2em;
+    color: #555;
+    margin: 10px 0;
+  }
+  

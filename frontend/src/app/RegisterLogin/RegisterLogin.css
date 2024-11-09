@@ -1,0 +1,67 @@
+/* src/pages/RegisterLogin.css */
+
+.register-container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  .toggle-buttons {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  
+  .toggle-button {
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    background-color: #ddd;
+    color: #333;
+    margin: 0 5px;
+    border-radius: 8px;
+    transition: background-color 0.3s;
+  }
+  
+  .toggle-button.active {
+    background-color: #2855d8; /* 带有蓝色调的深蓝 */
+    color: white;
+  }
+  
+  .register-container form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .register-container label {
+    margin-top: 10px;
+    font-weight: bold;
+  }
+  
+  .register-container input {
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+  }
+  
+  .register-container button {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #2855d8;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .register-container button:hover {
+    background-color: #1a3e91;
+  }
+  

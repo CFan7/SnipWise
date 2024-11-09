@@ -1,0 +1,28 @@
+/* src/pages/Home.css */
+  .home-container {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px;
+    text-align: center;
+    font-family: Arial, sans-serif;
+  }
+  
+  .home-images {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px; /* the gap between two images */
+    margin-top: 250px; /* make the region of images goes down */
+  }
+  
+  .home-images img:first-child {
+    width: 800px; /* adjust the size of the first image */
+    height: auto;
+    margin-bottom: 20px;
+  }
+  
+  .home-images img:last-child {
+    width: 500px; /* adjust the size of the second image */
+    height: auto;
+  }
+  
