@@ -20,11 +20,7 @@ The class project is to design, implement, and deploy a URL Shortener Service.
 
 ## Tech Stack
 
-```
-React for frontend
-```
-
-```
-BigTable and SpringBoot for backend
-```
+- **[React](https://react.dev/)** for web development
+- **[BigTable](https://cloud.google.com/bigtable)** for database
+- **[SpringBoot](https://spring.io/projects/spring-boot)** for backend
 
