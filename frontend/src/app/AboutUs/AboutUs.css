@@ -86,3 +86,26 @@
     color: #2855d8;
     margin-bottom: 100px;
   }
+
+  .values-section {
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+  }
+  
+  .value-item {
+    display: flex;
+    align-items: center;
+    margin: 5px 0;
+    font-size: 1.2em;
+  }
+  
+  .value-emoji {
+    margin-right: 8px;
+    font-size: 1.5em;
+  }
+  
+  .value-title {
+    font-weight: 600;
+    color: #333;
+  }

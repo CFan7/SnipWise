@@ -6,18 +6,39 @@ import Yufan from "../../assets/Yufan.jpeg";
 import SangWoo from "../../assets/SangWoo.jpeg";
 import Peilin from "../../assets/Peilin.jpeg";
 
+const Value = ({ emoji, title }) => (
+  <div className="value-item">
+    <span className="value-emoji">{emoji}</span>
+    <span className="value-title">{title}</span>
+  </div>
+);
+
 const AboutUs = () => {
+  const values = [
+    { emoji: '🔒', title: 'Security' },
+    { emoji: '🤝', title: 'Partnership' },
+    { emoji: '😊', title: 'Customer Satisfaction and Empowerment'},
+    { emoji: '📊', title: 'Data-Driven Excellence' },
+    { emoji: '⚙️', title: 'Focus and Efficiency' },
+  ];
+
   return (
     <div className="about-container">
       <img src={teamLogo} alt="Team Logo" className="team-logo" />
 
       <div className="mission-section">
         <h2>Mission</h2>
-        <p>To provide the best URL shortening service</p>
+        <p>To empower small businesses and startups with smart, data-driven link management tools that enhance efficiency, engagement, and decision-making</p>
         <h2>Vision</h2>
-        <p>To be the leading URL shortening provider for bussiness</p>
-        <h2>Value</h2>
-        <p>Secure, Wise, and Customer Satisfaction</p>
+        <p>To become the go-to platform for small businesses and startups to unlock the power of link data, transforming link management into a strategic, insight-driven advantage.</p>
+        {/* <h2>Value</h2>
+        <p>Secure, Wise, and Customer Satisfaction</p> */}
+        <h2>Values</h2>
+        <div className="values-section">
+          {values.map((value, index) => (
+            <Value key={index} emoji={value.emoji} title={value.title} />
+          ))}
+        </div>
       </div>
       
       <h2 className="founder-title">Our Founders</h2>
