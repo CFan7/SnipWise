@@ -18,4 +18,13 @@ The class project is to design, implement, and deploy a URL Shortener Service.
 &nbsp; b. EMEA or Europe/Middle East/Africa <br>
 &nbsp; c. APAC or Asia Pacific <br>
 
+## Tech Stack
+
+```
+React for frontend
+```
+
+```
+BigTable and SpringBoot for backend
+```
 
