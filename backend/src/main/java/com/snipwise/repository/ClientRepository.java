@@ -13,7 +13,9 @@ public interface ClientRepository extends JpaRepository<Client, UUID> {
     long countByEmail(String email);
 
 
-    @Query("SELECT c.passwd_encrypted from Client c WHERE c.client_email = :email")
-    String getEncryptedPassword(String email);
+    @Query("SELECT c from Client c WHERE c.client_email = :email")
+    Client getClientByEmail(String email);
 
+    @Query("SELECT c from Client c WHERE c.client_id = :clientId")
+    Client getClientByClientId(String clientId);
 }

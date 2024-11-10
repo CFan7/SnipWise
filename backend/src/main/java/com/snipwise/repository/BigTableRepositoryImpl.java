@@ -7,6 +7,7 @@ import com.google.cloud.bigtable.data.v2.BigtableDataSettings;
 import com.google.cloud.bigtable.data.v2.models.Row;
 import com.google.cloud.bigtable.data.v2.models.RowMutation;
 import com.snipwise.pojo.URL;
+import io.grpc.netty.shaded.io.netty.handler.codec.http.HttpResponseStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -41,9 +42,8 @@ public class BigTableRepositoryImpl implements BigtableRepository {
         Boolean isDeleted = Boolean.parseBoolean(isDeleted_str);
 
         String group_id = row.getCells("default","group_id").get(0).getValue().toStringUtf8();
-        String creator_api_key = row.getCells("default","creator_api_key").get(0).getValue().toStringUtf8();
-
-        return new URL(short_url,original_url,expiration_time,isDeleted,isActivated,group_id,creator_api_key);
+        String creator_id = row.getCells("default","creator_id").get(0).getValue().toStringUtf8();
+        return new URL(short_url,original_url,expiration_time,isDeleted,isActivated,group_id,creator_id);
 
     }
 
@@ -62,10 +62,32 @@ public class BigTableRepositoryImpl implements BigtableRepository {
                 .setCell("default", "isDeleted",entity.isDeleted()?"true":"false")
                 .setCell("default","isActivated",entity.isActivated()?"true":"false")
                 .setCell("default","group_id",entity.group_id())
-                .setCell("default","creator_api_key",entity.creator_api_key());
+                .setCell("default","creator_id",entity.creator_id());
 
         bigtableDataClient.mutateRow(mutation);
     }
+
+    @Override
+    public void delete(String short_url) {
+        Row row = bigtableDataClient.readRow(usersTableID, short_url);
+        if (row != null)
+        {
+            RowMutation mutation = RowMutation.create(
+                    usersTableID,
+                    short_url).setCell("default","isDeleted","True");
+            bigtableDataClient.mutateRow(mutation);
+            URL newURL = getRecordByShortURL(short_url);
+            if (newURL.isDeleted())
+            {
+                return;
+            }
+            else
+            {
+                throw new RuntimeException("Deletion failed due to an unknown error.");
+            }
+        }
+    }
+
     void close()
     {
         this.bigtableDataClient.close();
@@ -73,7 +95,7 @@ public class BigTableRepositoryImpl implements BigtableRepository {
 }
 
 /*
-public void createUser(DemoUser user) {
+public void createClient(DemoUser user) {
         String username = user.username();
         if (client.readRow(usersTableID, username) != null) {
             System.out.println("User \"" + username + "\" already exists in table");

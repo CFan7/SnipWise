@@ -1,8 +1,7 @@
 package com.snipwise.pojo;
 
-public class Client_create_DTO
+public class ClientLoginDTO
 {
-    public String client_name;
     public String client_email;
     public String passwd;
 }

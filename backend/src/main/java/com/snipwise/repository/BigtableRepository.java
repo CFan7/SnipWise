@@ -10,4 +10,6 @@ public interface BigtableRepository {
     URL getRecordByShortURL(String short_url);
 
     void save(URL entity);
+
+    void delete(String short_url);
 }
