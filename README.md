@@ -14,7 +14,7 @@ The class project is to design, implement, and deploy a URL Shortener Service.
   &nbsp;  b. resolve_url(short_url) ⇒ original_long_url <br>
 
 2- Be distributed Planet-wide. In practice, the service should cover 2-to-3 remote geo regions, for example:
-  &nbsp;  a. NAM or North America <br>
+          a. NAM or North America <br>
   &nbsp;  b. EMEA or Europe/Middle East/Africa <br>
   &nbsp;  c. APAC or Asia Pacific <br>
 
