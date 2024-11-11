@@ -9,8 +9,12 @@ import java.util.UUID;
 
 @Repository
 public interface ClientRepository extends JpaRepository<Client, UUID> {
-    @Query("SELECT COUNT(c) FROM Client c WHERE c.client_email = :email")
-    long countByEmail(String email);
+
+    //Create: implemented by Spring(save method)
+
+
+    @Query("SELECT EXISTS (c) FROM Client c WHERE c.client_email = :email")
+    Boolean isClientExists(String email);
 
 
     @Query("SELECT c from Client c WHERE c.client_email = :email")
