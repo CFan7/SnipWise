@@ -44,11 +44,11 @@ public class URLController
             // Expires
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
-        catch (ClientNotExistException | ClientUnauthorizedException e)
+        catch (ClientUnauthorizedException e)
         {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
-        catch (GroupNotExistException e)
+        catch (ClientNotExistException |GroupNotExistException e)
         {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
@@ -70,9 +70,17 @@ public class URLController
             urlService.deleteURLRecord(jwtString,short_url);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
         }
-        catch(JWTExpiredException | ClientNotExistException | ClientUnauthorizedException e)
+        catch(JWTExpiredException | ClientUnauthorizedException e)
         {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+        catch (URLRecordNotExistException e)
+        {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        catch (ClientNotExistException e)
+        {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
         catch (Exception e)
         {

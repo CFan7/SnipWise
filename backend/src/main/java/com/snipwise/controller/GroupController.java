@@ -26,9 +26,13 @@ public class GroupController
             Group group = groupService.createGroup(jwtString,groupCreateDTO,company_id);
             return ResponseEntity.status(HttpStatus.CREATED).body(new GroupCreateResponseDTO(group));
         }
-        catch (JWTException | ClientNotExistException | ClientUnauthorizedException e)
+        catch (JWTException | ClientUnauthorizedException e)
         {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+        catch (ClientNotExistException e)
+        {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
         catch (Exception e)
         {

@@ -1,6 +1,7 @@
 package com.snipwise.controller;
 
 
+import com.snipwise.exception.ClientNotExistException;
 import com.snipwise.exception.CompanyAlreadyExistException;
 import com.snipwise.pojo.*;
 
@@ -37,6 +38,10 @@ public class CompanyController
         catch (CompanyAlreadyExistException | OptimisticLockingFailureException e)
         {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
+        }
+        catch (ClientNotExistException e)
+        {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
         //other exceptions
         catch (Exception e)

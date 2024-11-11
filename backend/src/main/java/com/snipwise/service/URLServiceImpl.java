@@ -116,7 +116,14 @@ public class URLServiceImpl implements URLService
         }
 
         URL urlEntity = bigtableRepository.getRecordByShortURL(short_url);
-        if (!urlEntity.creator_id().equals(clientId))
+        if (urlEntity == null)
+        {
+            throw new URLRecordNotExistException();
+        }
+
+
+        String permission = groupService.getRelationBetweenClientAndGroup(clientId,urlEntity.group_id());
+        if (permission == null|| !(permission.equals("w") || permission.equals("x")))
         {
             throw new ClientUnauthorizedException();
         }

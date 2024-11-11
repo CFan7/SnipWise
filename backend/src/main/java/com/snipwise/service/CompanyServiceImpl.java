@@ -1,5 +1,6 @@
 package com.snipwise.service;
 
+import com.snipwise.exception.ClientNotExistException;
 import com.snipwise.exception.CompanyAlreadyExistException;
 import com.snipwise.pojo.Company;
 import com.snipwise.pojo.CompanyCreateDTO;
@@ -22,7 +23,7 @@ import java.util.UUID;
 public class CompanyServiceImpl implements CompanyService
 {
     @Autowired
-    private ClientRepository clientRepository;
+    private ClientService clientService;
 
     @Autowired
     private CompanyRepository companyRepository;
@@ -49,6 +50,11 @@ public class CompanyServiceImpl implements CompanyService
 
         String clientId = jwt.subject;
         Company company = new Company();
+        if(!clientService.isClientExistById(clientId))
+        {
+            throw new ClientNotExistException();
+        }
+
         if(companyRepository.isCompanyExists(UUID.fromString(companyCreateDTO.company_name)))
         {
             throw new CompanyAlreadyExistException();
