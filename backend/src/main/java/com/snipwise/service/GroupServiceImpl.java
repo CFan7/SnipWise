@@ -4,16 +4,16 @@ import com.snipwise.exception.ClientNotExistException;
 import com.snipwise.exception.ClientUnauthorizedException;
 import com.snipwise.pojo.Group;
 import com.snipwise.pojo.GroupCreateDTO;
-import com.snipwise.pojo.GroupPermission;
-import com.snipwise.repository.GroupPermissionRepository;
 import com.snipwise.repository.GroupRepository;
 import io.fusionauth.jwt.Verifier;
 import io.fusionauth.jwt.domain.JWT;
 import io.fusionauth.jwt.hmac.HMACVerifier;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.UUID;
 
 @Service
 public class GroupServiceImpl implements GroupService
@@ -30,55 +30,63 @@ public class GroupServiceImpl implements GroupService
     @Autowired
     GroupRepository groupRepository;
 
-    @Autowired
-    GroupPermissionRepository groupPermissionRepository;
+    @Override
+    public Boolean hasGroupExists(String groupId)
+    {
+        return groupRepository.hasGroupExists(groupId);
+    }
 
     @Override
     public Group getGroupByGroupId(String groupId)
     {
         return groupRepository.getGroupById(groupId);
     }
-    @Override
-    public String getRelationBetweenClientAndGroup(String client_id, String group_id)
-    {
-        return groupPermissionRepository.getPermissionTypeByGroupId(group_id,client_id);
-    }
 
     @Override
-    @Transactional
-    public Group createGroup(String jwtString, GroupCreateDTO groupCreateDTO, String companyId)
+    public Group createGroup(String jwtString, GroupCreateDTO groupCreateDTO, String companyName)
     {
         String jwtString_pure = jwtString.substring(7);// remove "Bearer "
         Verifier verifier = HMACVerifier.newVerifier(JWT_SECRET);
 
         JWT jwt = JWT.getDecoder().decode(jwtString_pure, verifier);
 
-        String clientId = jwt.subject;
-        if (!clientService.isClientExistById(clientId))
+        String clientEmail = jwt.subject;
+        if (!clientService.isClientExistByEmail(clientEmail))
         {
             throw new ClientNotExistException();
         }
 
-        String permission = companyService.getRelationBetweenClientAndCompany(clientId, companyId);
-        if (permission == null || !(permission.equals("w") || permission.equals("x")))
+
+        if (!clientService.hasClientAdminOfCompany(clientEmail, companyName))
         {
             throw new ClientUnauthorizedException();
         }
-        Group group = new Group();
-        group.group_name = groupCreateDTO.group_name;
-        group.company_id = companyId;
+        String uuid = UUID.randomUUID().toString();
+        while(groupRepository.hasGroupExists(uuid))
+        {
+            uuid = UUID.randomUUID().toString();
+        }
 
+        ArrayList<String> admins = new ArrayList<>();
+        admins.add(clientEmail);
+        ArrayList<String> write_members = new ArrayList<>();
+        write_members.add(clientEmail);
+        ArrayList<String> members = new ArrayList<>();
+        members.add(clientEmail);
 
-        Group savedGroup = groupRepository.save(group);
-
-        GroupPermission groupPermission = new GroupPermission();
-        groupPermission.group_id = savedGroup.group_id;
-        groupPermission.client_id = clientId;
-        groupPermission.permission_type = "x";
-
-        groupPermissionRepository.save(groupPermission);
-
-        return savedGroup;
+        Group group = new Group(
+                uuid,
+                groupCreateDTO.group_name,
+                companyName,
+                clientEmail,
+                admins,
+                write_members,
+                members
+        );
+        groupRepository.createGroup(group);
+        companyService.addGroupToCompany(companyName, uuid);
+        clientService.initClientForGroup(clientEmail, uuid);
+        return group;
     }
 
 }

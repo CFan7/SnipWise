@@ -9,10 +9,11 @@ import com.snipwise.service.ClientService;
 
 import io.fusionauth.jwt.JWTException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/clients")
@@ -28,7 +29,7 @@ public class ClientController {
         {
             ClientCreateResponseDTO client_create_responseDTO = clientService.createClient(client_create_dto);
             return ResponseEntity.status(HttpStatus.CREATED).body(client_create_responseDTO);
-        } catch (ClientAlreadyExistException | OptimisticLockingFailureException e)
+        } catch (ClientAlreadyExistException e)
         {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
         } catch (Exception e)
@@ -53,7 +54,80 @@ public class ClientController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
-    @GetMapping("/{clientId}")
+    @GetMapping("/{clientEmail}/access")
+    public ResponseEntity<List<String>> getClientAccess(
+            @RequestHeader("Authorization") String jwtString,
+            @PathVariable("clientEmail") String clientEmail,
+            @RequestParam("type") String type,
+            @RequestParam("role") String role)
+    {
+        try
+        {
+            if(type.equals("company"))
+
+            {
+                switch (role)
+                {
+                    case "owner" ->
+                    {
+                        List<String> clientOwnerCompany = clientService.getCompanyOwners(jwtString, clientEmail);
+                        return ResponseEntity.status(HttpStatus.OK).body(clientOwnerCompany);
+                    }
+                    case "admin" ->
+                    {
+                        List<String> clientAdminCompany = clientService.getCompanyAdmins(jwtString, clientEmail);
+                        return ResponseEntity.status(HttpStatus.OK).body(clientAdminCompany);
+                    }
+                    case "member" ->
+                    {
+                        List<String> clientMemberCompany = clientService.getCompanyMembers(jwtString, clientEmail);
+                        return ResponseEntity.status(HttpStatus.OK).body(clientMemberCompany);
+                    }
+                }
+            }
+            else if(type.equals("group"))
+            {
+                switch (role)
+                {
+                    case "owner" ->
+                    {
+                        List<String> clientOwnerGroup = clientService.getGroupOwners(jwtString, clientEmail);
+                        return ResponseEntity.status(HttpStatus.OK).body(clientOwnerGroup);
+                    }
+                    case "admin" ->
+                    {
+                        List<String> clientAdminGroup = clientService.getGroupAdmins(jwtString, clientEmail);
+                        return ResponseEntity.status(HttpStatus.OK).body(clientAdminGroup);
+                    }
+                    case "write_member" ->
+                    {
+                        List<String> clientWriteMemberGroup = clientService.getGroupWriteMembers(jwtString, clientEmail);
+                        return ResponseEntity.status(HttpStatus.OK).body(clientWriteMemberGroup);
+                    }
+                    case "member" ->
+                    {
+                        List<String> clientMemberGroup = clientService.getGroupMembers(jwtString, clientEmail);
+                        return ResponseEntity.status(HttpStatus.OK).body(clientMemberGroup);
+                    }
+                }
+            }
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+        catch (JWTException | ClientUnauthorizedException e)
+        {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+        catch (ClientNotExistException e)
+        {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        catch (Exception e)
+        {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    /*@GetMapping("/{clientId}")
     public ResponseEntity<ClientGetResponseDTO> getClient(@RequestHeader("Authorization") String jwtString, @PathVariable("clientId") String clientId)
     {
         try
@@ -70,5 +144,5 @@ public class ClientController {
         {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-    }
+    }*/
 }

@@ -8,7 +8,6 @@ import com.snipwise.pojo.*;
 import com.snipwise.service.CompanyService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/companies")
 public class CompanyController
 {
-
     @Autowired
     private CompanyService companyService;
 
@@ -35,7 +33,7 @@ public class CompanyController
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
         //company name already exist || fail to write record to the db
-        catch (CompanyAlreadyExistException | OptimisticLockingFailureException e)
+        catch (CompanyAlreadyExistException e)
         {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
         }

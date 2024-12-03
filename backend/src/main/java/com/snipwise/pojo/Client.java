@@ -1,21 +1,46 @@
 package com.snipwise.pojo;
 
 
-import jakarta.persistence.*;
+import com.google.cloud.bigtable.data.v2.models.Row;
 
-@Entity
-@Table(name="client_info")
-public class Client
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public record Client(
+        String client_name,
+        String passwd_encrypted,
+        String client_email,
+        List<String> company_owners,
+        List<String> company_admins,
+        List<String> company_members,
+        List<String> group_owners,
+        List<String> group_admins,
+        List<String> group_write_members,
+        List<String> group_members
+)
 {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "client_id")
-    public String client_id;
+    private static ArrayList<String> getArrayList(String[] arr)
+    {
+        if (arr.length == 1 && arr[0].isEmpty())
+        {
+            return new ArrayList<>();
+        }
+        return new ArrayList<>(Arrays.asList(arr));
+    }
+    public Client(String clientEmail, Row row)
+    {
 
-    @Column(name = "name")
-    public String client_name;
-    @Column(name = "passwd_encrypted")
-    public String passwd_encrypted;
-    @Column(name = "email")
-    public String client_email;
+        this( row.getCells("default","client_name").get(0).getValue().toStringUtf8(),
+                row.getCells("default","passwd_encrypted").get(0).getValue().toStringUtf8(),
+                clientEmail,
+                getArrayList(row.getCells("default","company_owners").get(0).getValue().toStringUtf8().split(";;")),
+                getArrayList(row.getCells("default","company_admins").get(0).getValue().toStringUtf8().split(";;")),
+                getArrayList(row.getCells("default","company_members").get(0).getValue().toStringUtf8().split(";;")),
+                getArrayList(row.getCells("default","group_owners").get(0).getValue().toStringUtf8().split(";;")),
+                getArrayList(row.getCells("default","group_admins").get(0).getValue().toStringUtf8().split(";;")),
+                getArrayList(row.getCells("default","group_write_members").get(0).getValue().toStringUtf8().split(";;")),
+                getArrayList(row.getCells("default","group_members").get(0).getValue().toStringUtf8().split(";;"))
+        );
+    }
 }

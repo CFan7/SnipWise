@@ -1,25 +1,44 @@
 package com.snipwise.repository;
 
 import com.snipwise.pojo.Client;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
 
-import java.util.UUID;
+import java.util.List;
 
-@Repository
-public interface ClientRepository extends JpaRepository<Client, UUID> {
+public interface ClientRepository
+{
+    void createClient(Client client);
 
-    //Create: implemented by Spring(save method)
+    void updateClient(Client client);
+    void initClientForCompany(String email, String companyName);
+    void initClientForGroup(String email, String groupName);
 
-
-    @Query("SELECT EXISTS (c) FROM Client c WHERE c.client_email = :email")
-    Boolean isClientExists(String email);
-
-
-    @Query("SELECT c from Client c WHERE c.client_email = :email")
     Client getClientByEmail(String email);
+    Boolean hasClientExists(String email);
 
-    @Query("SELECT c from Client c WHERE c.client_id = :clientId")
-    Client getClientByClientId(String clientId);
+    Boolean hasClientOwnerOfCompany(String email, String companyName);
+    Boolean hasClientAdminOfCompany(String email, String companyName);
+    Boolean hasClientMemberOfCompany(String email, String companyName);
+
+    Boolean hasClientOwnerOfGroup(String email, String groupId);
+    Boolean hasClientAdminOfGroup(String email, String groupId);
+    Boolean hasClientWriteMemberOfGroup(String email, String groupId);
+    Boolean hasClientMemberOfGroup(String email, String groupId);
+
+    List<String> getCompanyOwners(String email);
+    List<String> getCompanyAdmins(String email);
+    List<String> getCompanyMembers(String email);
+
+    List<String> getGroupOwners(String clientEmail);
+    List<String> getGroupAdmins(String clientEmail);
+    List<String> getGroupWriteMembers(String clientEmail);
+    List<String> getGroupMembers(String clientEmail);
+
+    void deleteClient(String email);
+
+
+
+
+
+
+
 }

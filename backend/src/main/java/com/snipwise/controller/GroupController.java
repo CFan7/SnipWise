@@ -13,17 +13,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/{company_id}/groups")
+@RequestMapping("/api/{companyName}/groups")
 public class GroupController
 {
     @Autowired
     private GroupService groupService;
     @PostMapping()
-    public ResponseEntity<GroupCreateResponseDTO> createGroup(@RequestHeader("Authorization") String jwtString, @PathVariable String company_id, @RequestBody GroupCreateDTO groupCreateDTO)
+    public ResponseEntity<GroupCreateResponseDTO> createGroup(@RequestHeader("Authorization") String jwtString, @PathVariable String companyName, @RequestBody GroupCreateDTO groupCreateDTO)
     {
         try
         {
-            Group group = groupService.createGroup(jwtString,groupCreateDTO,company_id);
+            Group group = groupService.createGroup(jwtString,groupCreateDTO,companyName);
             return ResponseEntity.status(HttpStatus.CREATED).body(new GroupCreateResponseDTO(group));
         }
         catch (JWTException | ClientUnauthorizedException e)

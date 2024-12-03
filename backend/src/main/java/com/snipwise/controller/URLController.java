@@ -23,16 +23,18 @@ public class URLController
     {
         try
         {
-            String query_result = urlService.getURLRequest(request.getRequestURL().toString());
+            String query_result = urlService.getOriginalURL(request.getRequestURL().toString());
             return new RedirectView(query_result);
         }
-        catch (URLRecordNotExistException | URLRecordNotActivatedException | URLRecordDeletedException e)
+        catch (URLRecordNotExistException | URLRecordNotActivatedException e)
         {
             return new RedirectView("https://www.example.com");
         }
     }
     @PostMapping("/api/url")
-    public ResponseEntity<URLCreateResponseDTO> createURLRecord(@RequestHeader("Authorization") String jwtString,@RequestBody URLCreateDTO entity)
+    public ResponseEntity<URLCreateResponseDTO> createURLRecord(
+            @RequestHeader("Authorization") String jwtString,
+            @RequestBody URLCreateDTO entity)
     {
         try
         {
