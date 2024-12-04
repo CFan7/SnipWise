@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 public class URLServiceImpl implements URLService
 {
@@ -79,20 +81,44 @@ public class URLServiceImpl implements URLService
         {
             throw new ClientUnauthorizedException();
         }
-        //Group group = groupService.getGroupByGroupId(entity.groupId());
-        //String companyName = group.company_name();
-        //String short_url = "http://"+companyPrefix+".snip-wise.com/s/" + entity.suffix;
-        String short_url = "http://localhost:8080/s/" + entity.suffix();
-        try
+        Long current_time_s = System.currentTimeMillis() / 1000;
+        if (entity.expiration_time_unix() < current_time_s)
         {
-            getURLRecord(short_url);
-            throw new URLRecordAlreadyExistException();//not activated => also exist
+            throw new IllegalArgumentException("Expiration time is in the past");
         }
-        catch(URLRecordNotExistException e)
+        String short_url = "";
+        if(entity.suffix().isEmpty())
         {
-            // URL record not exist, can create
+            boolean isExist = true;
+            while(isExist)
+            {
+                try
+                {
+                    short_url = "http://localhost:8080/s/" + UUID.randomUUID().toString().replace("-", "").substring(0, 12);
+                    getURLRecord(short_url);
+                }
+                catch(URLRecordNotExistException e)
+                {
+                    isExist = false;
+                }
+            }
         }
-
+        else
+        {
+            //Group group = groupService.getGroupByGroupId(entity.groupId());
+            //String companyName = group.company_name();
+            //String short_url = "http://"+companyPrefix+".snip-wise.com/s/" + entity.suffix;
+            short_url = "http://localhost:8080/s/" + entity.suffix();
+            try
+            {
+                getURLRecord(short_url);
+                throw new URLRecordAlreadyExistException();//not activated => also exist
+            }
+            catch(URLRecordNotExistException e)
+            {
+                // URL record not exist, can create
+            }
+        }
         URL urlEntity = new URL(
                 short_url,
                 entity.original_url(),
