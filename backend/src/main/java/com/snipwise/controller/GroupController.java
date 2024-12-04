@@ -13,7 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/{companyName}/groups")
+@RequestMapping("/api/companies/{companyName}/groups")
 public class GroupController
 {
     @Autowired

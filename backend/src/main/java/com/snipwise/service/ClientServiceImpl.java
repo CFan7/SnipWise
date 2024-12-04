@@ -31,7 +31,7 @@ public class ClientServiceImpl implements ClientService
     private String JWT_SECRET;
 
     @Override
-    public Boolean isClientExistByEmail(String email)
+    public Boolean isClientExist(String email)
     {
         return clientRepository.hasClientExists(email);
     }

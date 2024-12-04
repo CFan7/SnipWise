@@ -3,8 +3,6 @@ package com.snipwise.service;
 import com.snipwise.exception.*;
 import com.snipwise.pojo.*;
 import com.snipwise.repository.URLRepository;
-import com.snipwise.repository.ClientRepository;
-import com.snipwise.repository.CompanyRepository;
 import io.fusionauth.jwt.Verifier;
 import io.fusionauth.jwt.domain.JWT;
 import io.fusionauth.jwt.hmac.HMACVerifier;
@@ -69,7 +67,7 @@ public class URLServiceImpl implements URLService
         JWT jwt = JWT.getDecoder().decode(jwtString_pure, verifier);
         String clientEmail = jwt.subject;
 
-        if (!clientService.isClientExistByEmail(clientEmail))
+        if (!clientService.isClientExist(clientEmail))
         {
             throw new ClientNotExistException();
         }
@@ -116,7 +114,7 @@ public class URLServiceImpl implements URLService
         JWT jwt = JWT.getDecoder().decode(jwtString_pure, verifier);
 
         String clientId = jwt.subject;
-        if (!clientService.isClientExistByEmail(clientId))
+        if (!clientService.isClientExist(clientId))
         {
             throw new ClientNotExistException();
         }

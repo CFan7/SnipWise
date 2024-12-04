@@ -1,6 +1,7 @@
 package com.snipwise.service;
 
 import com.snipwise.exception.ClientNotExistException;
+import com.snipwise.exception.ClientUnauthorizedException;
 import com.snipwise.exception.CompanyAlreadyExistException;
 import com.snipwise.pojo.Company;
 import com.snipwise.pojo.CompanyCreateDTO;
@@ -27,11 +28,48 @@ public class CompanyServiceImpl implements CompanyService
 
     @Value("${JWT_SECRET}")
     private String JWT_SECRET;
-
     @Override
-    public void addGroupToCompany(String company_name, String group_name)
+    public void addMember(String jwtString, String company_name, String role)
     {
-        companyRepository.addGroupToCompany(company_name,group_name);
+        String jwtString_pure = jwtString.substring(7);// remove "Bearer "
+        Verifier verifier = HMACVerifier.newVerifier(JWT_SECRET);
+        JWT jwt = JWT.getDecoder().decode(jwtString_pure, verifier);
+        String clientEmail = jwt.subject;
+
+        Company company = companyRepository.getCompany(company_name);//throw exception if company not exist
+        if(!clientService.isClientExist(clientEmail))
+        {
+            throw new ClientNotExistException();
+        }
+        if(!clientService.hasClientAdminOfCompany(clientEmail,company_name))
+        {
+            throw new ClientUnauthorizedException();
+        }
+
+        switch (role)
+        {
+            case "admin":
+                company.admins().add(clientEmail);
+                companyRepository.updateCompany(company);
+                break;
+            case "member":
+                company.members().add(clientEmail);
+                companyRepository.updateCompany(company);
+                break;
+            default:
+                throw new IllegalArgumentException("role must be either admin or member");
+        }
+    }
+    @Override
+    public void addGroupToCompany(String companyName, String groupId)
+    {
+        Company company = companyRepository.getCompany(companyName);//throw exception if company not exist
+        if (company.groups().contains(groupId))
+        {
+            return;
+        }
+        company.groups().add(groupId);
+        companyRepository.updateCompany(company);
     }
 
     public CompanyCreateResponseDTO createCompany(String jwtString, CompanyCreateDTO companyCreateDTO)
@@ -47,7 +85,7 @@ public class CompanyServiceImpl implements CompanyService
         {
             throw new CompanyAlreadyExistException();
         }
-        if(!clientService.isClientExistByEmail(client_email))
+        if(!clientService.isClientExist(client_email))
         {
             throw new ClientNotExistException();
         }
@@ -63,21 +101,12 @@ public class CompanyServiceImpl implements CompanyService
                 client_email,
                 admins,
                 members,
-                new ArrayList<>()
+                new ArrayList<>(),
+                "0"
         );
         companyRepository.createCompany(company);
         clientService.initClientForCompany(client_email,company.company_name());
 
-
-
-        /*
-        CompanyPermission companyPermission = new CompanyPermission();
-        companyPermission.company_id = createdCompany.company_id;
-        companyPermission.client_id = client_email;
-        companyPermission.permission_type = "x";
-
-        companyPermissionRepository.save(companyPermission);
-        */
         return new CompanyCreateResponseDTO(
                 company.company_name(),
                 company.company_subscription_type(),

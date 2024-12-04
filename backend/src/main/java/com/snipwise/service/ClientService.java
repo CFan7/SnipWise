@@ -16,7 +16,7 @@ public interface ClientService
     void initClientForCompany(String email, String companyName);
 
 
-    Boolean isClientExistByEmail(String email);
+    Boolean isClientExist(String email);
     Boolean hasClientOwnerOfCompany(String email, String companyName);
     Boolean hasClientAdminOfCompany(String email, String companyName);
     Boolean hasClientOwnerOfGroup(String email, String groupId);

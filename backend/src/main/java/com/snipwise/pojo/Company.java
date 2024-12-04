@@ -14,7 +14,8 @@ public record Company
     String owner,
     List<String> admins,
     List<String> members,
-    List<String> groups
+    List<String> groups,
+    String version
 )
 {
     private static ArrayList<String> getArrayList(String[] arr)
@@ -33,7 +34,8 @@ public record Company
                 row.getCells("default","owner").get(0).getValue().toStringUtf8(),
                 getArrayList(row.getCells("default","admins").get(0).getValue().toStringUtf8().split(";;")),
                 getArrayList(row.getCells("default","members").get(0).getValue().toStringUtf8().split(";;")),
-                getArrayList(row.getCells("default","groups").get(0).getValue().toStringUtf8().split(";;"))
+                getArrayList(row.getCells("default","groups").get(0).getValue().toStringUtf8().split(";;")),
+                row.getCells("default","version").get(0).getValue().toStringUtf8()
         );
     }
 

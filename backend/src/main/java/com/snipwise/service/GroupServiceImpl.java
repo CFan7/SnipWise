@@ -51,7 +51,7 @@ public class GroupServiceImpl implements GroupService
         JWT jwt = JWT.getDecoder().decode(jwtString_pure, verifier);
 
         String clientEmail = jwt.subject;
-        if (!clientService.isClientExistByEmail(clientEmail))
+        if (!clientService.isClientExist(clientEmail))
         {
             throw new ClientNotExistException();
         }

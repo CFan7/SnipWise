@@ -21,7 +21,6 @@ The document tries to introduce the API endpoints of the backend. The document i
             * BODY:
                 ```json
                 {
-                    "client_id":"CLIENT_ID(STRING)",
                     "client_name":"CLIENT_NAME(STRING)",
                     "client_email":"CLIENT_EMAIL(STRING)"
                 }
@@ -50,7 +49,7 @@ The document tries to introduce the API endpoints of the backend. The document i
             * BODY:
                 ```json
                 {
-                    "client_id":"CLIENT_ID(STRING)",
+                    "client_email":"CLIENT_EMAIL(STRING)",
                     "jwt":"JWT(STRING)",
                     "expiration_time":"EXPIRATION_TIME(STRING)"
                 }
@@ -64,8 +63,21 @@ The document tries to introduce the API endpoints of the backend. The document i
             * BODY:
                 empty
 
-* GET /api/clients/{client_id}:
-    * Description: Get client information. Currently only the client himself/herself can access this endpoint.
+* GET /api/clients/{client_id}/access?type={type}&role={role}:
+    * Description: Get client information.Can be used to show all companies and groups, that the client owns/ is admin of/ is member of, etc.
+
+    valid type-role pairs:
+
+    | type | role |
+    |------|------|
+    | company | owner |
+    | company | admin |
+    | company | member |
+    | group | owner |
+    | group | admin |
+    | group | write_member |
+    | group | member |
+
     * Request:
         * Header:
             * Authorization: Bearer jwt string
@@ -75,11 +87,19 @@ The document tries to introduce the API endpoints of the backend. The document i
             * HTTP code: 200
             * BODY:
                 ```json
-                {
-                    "client_id":"CLIENT_ID(STRING)",
-                    "client_name":"CLIENT_NAME(STRING)",
-                    "client_email":"CLIENT_EMAIL(STRING)"
-                }
+                [
+                    "CompanyName0",
+                    "CompanyName1",
+                    "CompanyName2",
+                ]
+                ```
+                or
+                ```json
+                [
+                    "GroupId0",
+                    "GroupId1",
+                    "GroupId2",
+                ]
                 ```
         * if the jwt is invalid or the client_id is not the same as the client_id in the jwt:
             * HTTP code: 401 unauthorized
@@ -113,29 +133,19 @@ The document tries to introduce the API endpoints of the backend. The document i
 
             ```json
             {
-                "short_url":"SHORT_URL(STRING)",
+                "suffix":"SHORT_URL(STRING)",
                 "original_url":"ORIGINAL_URL(STRING)",
-                "expiration_time":"EXPIRATION_TIME(STRING)",
+                "expiration_time_unix":"EXPIRATION_TIME(STRING)",
                 "isActivated":"IS_ACTIVATED(BOOLEAN)",
-                "group_id":"GROUP_ID(STRING)"
+                "groupId":"GROUP_ID(STRING)"
             }
             ```
     * Response:
         * if the short URL is created successfully:
 
-            * HTTP code: 201
+            * HTTP code: 204
             * BODY:
-                ```json
-                {
-                    "short_url":"SHORT_URL(STRING)",
-                    "original_url":"ORIGINAL_URL(STRING)",
-                    "expiration_time":"EXPIRATION_TIME(STRING)",
-                    "isDeleted":"IS_DELETED(BOOLEAN)",
-                    "isActivated":"IS_ACTIVATED(BOOLEAN)",
-                    "group_id":"GROUP_ID(STRING)",
-                    "creator_id":"CLIENT_ID(STRING)"
-                }
-                ```
+                empty
         * if the short URL is not created beacuse of an invalid jwt | client has no permission to create short URL in the group:
             * HTTP code: 401 unauthorized
             * BODY:
@@ -195,7 +205,6 @@ The document tries to introduce the API endpoints of the backend. The document i
             * BODY:
                 ```json
                 {
-                    "company_id":"COMPANY_ID(STRING)",
                     "company_name":"COMPANY_NAME(STRING)",
                     "company_subscription_type":"COMPANY_SUBSCRIPTION_TYPE(STRING)",
                     "company_subscription_expiration_time":"COMPANY_SUBSCRIPTION_EXPIRATION_TIME(STRING)"
@@ -219,7 +228,7 @@ The document tries to introduce the API endpoints of the backend. The document i
             * BODY:
                 empty
 
-* POST /api/{company_id}/groups:
+* POST /api/companies/{companyName}/groups:
     * Description: Create a new group
     * Request:
         * Header: Authorization Bearer jwt string
