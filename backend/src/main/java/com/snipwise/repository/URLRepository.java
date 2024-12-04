@@ -4,10 +4,7 @@ import com.snipwise.pojo.URL;
 
 public interface URLRepository
 {
-
-    URL getRecordByShortURL(String short_url);
-
     void createURLRecord(URL entity);
-
+    URL getRecordByShortURL(String short_url);
     void deleteURLRecord(String short_url);
 }

@@ -38,24 +38,45 @@ public class ClientServiceImpl implements ClientService
     @Override
     public Boolean hasClientOwnerOfCompany(String email, String companyName)
     {
-        return clientRepository.hasClientOwnerOfCompany(email,companyName);
+        Client client = clientRepository.getClient(email);//raise exception if client not exist
+        return client.company_owners().contains(companyName);
     }
     @Override
     public Boolean hasClientAdminOfCompany(String email, String companyName)
     {
-        return clientRepository.hasClientAdminOfCompany(email,companyName);
+        Client client = clientRepository.getClient(email);//raise exception if client not exist
+        return client.company_admins().contains(companyName);
+    }
+    @Override
+    public Boolean hasClientMemberOfCompany(String email, String companyName)
+    {
+        Client client = clientRepository.getClient(email);//raise exception if client not exist
+        return client.company_members().contains(companyName);
     }
     @Override
     public Boolean hasClientOwnerOfGroup(String email, String groupId)
     {
-        return clientRepository.hasClientOwnerOfGroup(email,groupId);
+        Client client = clientRepository.getClient(email);//raise exception if client not exist
+        return client.group_owners().contains(groupId);
     }
     @Override
     public Boolean hasClientAdminOfGroup(String email, String groupId)
     {
-        return clientRepository.hasClientAdminOfGroup(email,groupId);
+        Client client = clientRepository.getClient(email);//raise exception if client not exist
+        return client.group_admins().contains(groupId);
     }
-
+    @Override
+    public Boolean hasClientWriteMemberOfGroup(String email, String groupId)
+    {
+        Client client = clientRepository.getClient(email);//raise exception if client not exist
+        return client.group_write_members().contains(groupId);
+    }
+    @Override
+    public Boolean hasClientMemberOfGroup(String email, String groupId)
+    {
+        Client client = clientRepository.getClient(email);//raise exception if client not exist
+        return client.group_members().contains(groupId);
+    }
 
     @Override
     public List<String> getCompanyOwners(String jwtString, String email) {
@@ -70,8 +91,12 @@ public class ClientServiceImpl implements ClientService
         {
             throw new ClientUnauthorizedException();
         }
-
-        return clientRepository.getCompanyOwners(email);
+        Client client = clientRepository.getClient(email);
+        if (client == null)
+        {
+            throw new ClientNotExistException();
+        }
+        return client.company_owners();
     }
 
     @Override
@@ -87,8 +112,12 @@ public class ClientServiceImpl implements ClientService
         {
             throw new ClientUnauthorizedException();
         }
-
-        return clientRepository.getCompanyAdmins(email);
+        Client client = clientRepository.getClient(email);
+        if (client == null)
+        {
+            throw new ClientNotExistException();
+        }
+        return client.company_admins();
     }
 
     @Override
@@ -104,8 +133,12 @@ public class ClientServiceImpl implements ClientService
         {
             throw new ClientUnauthorizedException();
         }
-
-        return clientRepository.getCompanyMembers(email);
+        Client client = clientRepository.getClient(email);
+        if (client == null)
+        {
+            throw new ClientNotExistException();
+        }
+        return client.company_members();
     }
 
     @Override
@@ -120,8 +153,12 @@ public class ClientServiceImpl implements ClientService
         {
             throw new ClientUnauthorizedException();
         }
-        return  clientRepository.getGroupOwners(clientEmail);
-
+        Client client = clientRepository.getClient(clientEmail);
+        if (client == null)
+        {
+            throw new ClientNotExistException();
+        }
+        return client.group_owners();
     }
 
     @Override
@@ -136,7 +173,12 @@ public class ClientServiceImpl implements ClientService
         {
             throw new ClientUnauthorizedException();
         }
-        return  clientRepository.getGroupAdmins(clientEmail);
+        Client client = clientRepository.getClient(clientEmail);
+        if (client == null)
+        {
+            throw new ClientNotExistException();
+        }
+        return client.group_admins();
     }
 
     @Override
@@ -151,7 +193,12 @@ public class ClientServiceImpl implements ClientService
         {
             throw new ClientUnauthorizedException();
         }
-        return  clientRepository.getGroupWriteMembers(clientEmail);
+        Client client = clientRepository.getClient(clientEmail);
+        if (client == null)
+        {
+            throw new ClientNotExistException();
+        }
+        return client.group_write_members();
     }
     @Override
     public List<String> getGroupMembers(String jwtString, String clientEmail) {
@@ -165,23 +212,50 @@ public class ClientServiceImpl implements ClientService
         {
             throw new ClientUnauthorizedException();
         }
-        return  clientRepository.getGroupMembers(clientEmail);
+        Client client = clientRepository.getClient(clientEmail);
+        if (client == null)
+        {
+            throw new ClientNotExistException();
+        }
+        return client.group_members();
     }
 
     @Override
     public void initClientForGroup(String email, String groupName)
     {
-        clientRepository.initClientForGroup(email,groupName);
+        Client client = clientRepository.getClient(email);
+        if (client == null)
+        {
+            throw new ClientNotExistException();
+        }
+        client.group_owners().add(groupName);
+        client.group_admins().add(groupName);
+        client.group_write_members().add(groupName);
+        client.group_members().add(groupName);
+        clientRepository.updateClient(client);
     }
 
     @Override
     public void initClientForCompany(String email, String companyName)
     {
-        clientRepository.initClientForCompany(email,companyName);
+        Client client = clientRepository.getClient(email);
+        if (client == null)
+        {
+            throw new ClientNotExistException();
+        }
+        client.company_owners().add(companyName);
+        client.company_admins().add(companyName);
+        client.company_members().add(companyName);
+        clientRepository.updateClient(client);
     }
     public Boolean hasClientOwnershipOf(String email,String companyName)
     {
-        return clientRepository.hasClientOwnerOfCompany(email,companyName);
+        Client client = clientRepository.getClient(email);
+        if (client == null)
+        {
+            throw new ClientNotExistException();
+        }
+        return client.company_owners().contains(companyName);
     }
 
     @Override
@@ -201,7 +275,8 @@ public class ClientServiceImpl implements ClientService
                 new ArrayList<>(),
                 new ArrayList<>(),
                 new ArrayList<>(),
-                new ArrayList<>());
+                new ArrayList<>(),
+                "0");
 
         try
         {
@@ -226,7 +301,7 @@ public class ClientServiceImpl implements ClientService
     @Override
     public ClientLoginResponseDTO login(ClientLoginDTO clientLoginDTO)
     {
-        Client client = clientRepository.getClientByEmail(clientLoginDTO.client_email());
+        Client client = clientRepository.getClient(clientLoginDTO.client_email());
         if (client == null)
         {
             throw new ClientNotExistException();
@@ -247,27 +322,5 @@ public class ClientServiceImpl implements ClientService
                 zonedDateTime.toString()
                 );
     }
-/*
-    @Override
-    public ClientGetResponseDTO getClient(String jwtString, String clientId)
-    {
-        String jwtString_pure = jwtString.substring(7);// remove "Bearer "
-        Verifier verifier = HMACVerifier.newVerifier(JWT_SECRET);
-
-        JWT jwt = JWT.getDecoder().decode(jwtString_pure, verifier);
-        if (!Objects.equals(jwt.subject, clientId))
-        {
-            throw new ClientUnauthorizedException();
-        }
-        Client client = clientRepository.getClientByClientId(clientId);
-        if (client == null)
-        {
-            throw new ClientNotExistException();
-        }
-        return new ClientGetResponseDTO(client.client_id, client.client_name, client.client_email);
-
-    }
-
- */
 }
 

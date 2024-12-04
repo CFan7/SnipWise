@@ -19,8 +19,16 @@ public interface ClientService
     Boolean isClientExist(String email);
     Boolean hasClientOwnerOfCompany(String email, String companyName);
     Boolean hasClientAdminOfCompany(String email, String companyName);
+
+    Boolean hasClientMemberOfCompany(String email, String companyName);
+
     Boolean hasClientOwnerOfGroup(String email, String groupId);
     Boolean hasClientAdminOfGroup(String email, String groupId);
+
+    Boolean hasClientWriteMemberOfGroup(String email, String groupId);
+
+    Boolean hasClientMemberOfGroup(String email, String groupId);
+
     List<String> getCompanyOwners(String jwtString, String email);
     List<String> getCompanyAdmins(String jwtString, String email);
     List<String> getCompanyMembers(String jwtString, String email);

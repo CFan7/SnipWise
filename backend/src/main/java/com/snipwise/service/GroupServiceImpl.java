@@ -39,7 +39,7 @@ public class GroupServiceImpl implements GroupService
     @Override
     public Group getGroupByGroupId(String groupId)
     {
-        return groupRepository.getGroupById(groupId);
+        return groupRepository.getGroup(groupId);
     }
 
     @Override
@@ -81,7 +81,8 @@ public class GroupServiceImpl implements GroupService
                 clientEmail,
                 admins,
                 write_members,
-                members
+                members,
+                "0"
         );
         groupRepository.createGroup(group);
         companyService.addGroupToCompany(companyName, uuid);

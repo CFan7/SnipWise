@@ -14,7 +14,8 @@ public record Group
                 String owner,
                 List<String> admins,
                 List<String> write_members,
-                List<String> members
+                List<String> members,
+                String version
         )
 {
     private static ArrayList<String> getArrayList(String[] arr)
@@ -33,7 +34,8 @@ public record Group
                 row.getCells("default","owner").get(0).getValue().toStringUtf8(),
                 getArrayList(row.getCells("default","admins").get(0).getValue().toStringUtf8().split(";;")),
                 getArrayList(row.getCells("default","write_members").get(0).getValue().toStringUtf8().split(";;")),
-                getArrayList(row.getCells("default","members").get(0).getValue().toStringUtf8().split(";;"))
+                getArrayList(row.getCells("default","members").get(0).getValue().toStringUtf8().split(";;")),
+                row.getCells("default","version").get(0).getValue().toStringUtf8()
         );
 
     }

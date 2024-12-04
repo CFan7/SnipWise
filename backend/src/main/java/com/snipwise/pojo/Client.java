@@ -17,7 +17,8 @@ public record Client(
         List<String> group_owners,
         List<String> group_admins,
         List<String> group_write_members,
-        List<String> group_members
+        List<String> group_members,
+        String version
 )
 {
     private static ArrayList<String> getArrayList(String[] arr)
@@ -40,7 +41,8 @@ public record Client(
                 getArrayList(row.getCells("default","group_owners").get(0).getValue().toStringUtf8().split(";;")),
                 getArrayList(row.getCells("default","group_admins").get(0).getValue().toStringUtf8().split(";;")),
                 getArrayList(row.getCells("default","group_write_members").get(0).getValue().toStringUtf8().split(";;")),
-                getArrayList(row.getCells("default","group_members").get(0).getValue().toStringUtf8().split(";;"))
+                getArrayList(row.getCells("default","group_members").get(0).getValue().toStringUtf8().split(";;")),
+                row.getCells("default","version").get(0).getValue().toStringUtf8()
         );
     }
 }

@@ -2,6 +2,7 @@ package com.snipwise.repository;
 import com.google.cloud.bigtable.data.v2.BigtableDataClient;
 import com.google.cloud.bigtable.data.v2.models.Row;
 import com.google.cloud.bigtable.data.v2.models.RowMutation;
+import com.google.cloud.bigtable.data.v2.models.TableId;
 import com.snipwise.exception.GroupNotExistException;
 import com.snipwise.pojo.Group;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,7 @@ public class GroupRepositoryImpl implements GroupRepository
 {
     @Autowired
     BigtableDataClient bigtableDataClient;
-    String usersTableID = "snip-wise_groups";
+    TableId usersTableID = TableId.of("snip-wise_groups");
 
     @Override
     public Boolean hasGroupExists(String groupId) {
@@ -21,7 +22,7 @@ public class GroupRepositoryImpl implements GroupRepository
     }
 
     @Override
-    public Group getGroupById(String groupId) {
+    public Group getGroup(String groupId) {
         Row row = bigtableDataClient.readRow(usersTableID, groupId);
         if (row == null)
         {
@@ -36,10 +37,6 @@ public class GroupRepositoryImpl implements GroupRepository
     @Override
     public void createGroup(Group group) {
         Row row = bigtableDataClient.readRow(usersTableID, group.group_id());
-        //if (row != null)
-        //{
-        //    throw new GroupAlreadyExistException();
-        //}
         String group_members = String.join(";;", group.members());
         String group_admins = String.join(";;", group.admins());
         String group_write_members = String.join(";;", group.write_members());
