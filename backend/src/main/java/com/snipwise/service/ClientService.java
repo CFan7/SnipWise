@@ -35,8 +35,8 @@ public interface ClientService
     List<String> getGroupOwners(String jwtString, String clientEmail);
     List<String> getGroupAdmins(String jwtString, String clientEmail);
     List<String> getGroupWriteMembers(String jwtString, String clientEmail);
-
-
+    Client getClient(String email);
+    void updateClient(Client client);
 
     ClientLoginResponseDTO login(@RequestBody ClientLoginDTO client_login_dto);
 

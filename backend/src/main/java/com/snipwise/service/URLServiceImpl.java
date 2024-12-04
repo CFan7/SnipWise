@@ -75,7 +75,7 @@ public class URLServiceImpl implements URLService
         {
             throw new GroupNotExistException();
         }
-        if (!clientService.hasClientAdminOfGroup(clientEmail, entity.groupId()))
+        if (!clientService.hasClientWriteMemberOfGroup(clientEmail, entity.groupId()))
         {
             throw new ClientUnauthorizedException();
         }

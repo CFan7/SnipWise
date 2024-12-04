@@ -7,8 +7,7 @@ public interface GroupService
 {
 
     Boolean hasGroupExists(String groupId);
+    Group createGroup(String jwtString, GroupCreateDTO groupCreateDTO, String companyName);
 
     Group getGroupByGroupId(String groupId);
-
-    Group createGroup(String jwtString, GroupCreateDTO groupCreateDTO, String companyName);
 }

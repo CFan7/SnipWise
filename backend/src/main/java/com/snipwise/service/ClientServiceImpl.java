@@ -83,7 +83,7 @@ public class ClientServiceImpl implements ClientService
         String jwtString_pure = jwtString.substring(7);// remove "Bearer "
         Verifier verifier = HMACVerifier.newVerifier(JWT_SECRET);
 
-        // If jwt is invalid or has expired, will throw a exception here
+        // If jwt is invalid or has expired, will throw an exception here
         JWT jwt = JWT.getDecoder().decode(jwtString_pure, verifier);
 
         String client_email = jwt.subject;
@@ -104,7 +104,7 @@ public class ClientServiceImpl implements ClientService
         String jwtString_pure = jwtString.substring(7);// remove "Bearer "
         Verifier verifier = HMACVerifier.newVerifier(JWT_SECRET);
 
-        // If jwt is invalid or has expired, will throw a exception here
+        // If jwt is invalid or has expired, will throw an exception here
         JWT jwt = JWT.getDecoder().decode(jwtString_pure, verifier);
 
         String client_email = jwt.subject;
@@ -200,6 +200,17 @@ public class ClientServiceImpl implements ClientService
         }
         return client.group_write_members();
     }
+
+    @Override
+    public Client getClient(String email) {
+        return clientRepository.getClient(email);
+    }
+
+    @Override
+    public void updateClient(Client client) {
+        clientRepository.updateClient(client);
+    }
+
     @Override
     public List<String> getGroupMembers(String jwtString, String clientEmail) {
         String jwtString_pure = jwtString.substring(7);// remove "Bearer "

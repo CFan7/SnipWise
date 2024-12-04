@@ -90,7 +90,7 @@ The document tries to introduce the API endpoints of the backend. The document i
                 [
                     "CompanyName0",
                     "CompanyName1",
-                    "CompanyName2",
+                    "CompanyName2"
                 ]
                 ```
                 or
@@ -98,7 +98,7 @@ The document tries to introduce the API endpoints of the backend. The document i
                 [
                     "GroupId0",
                     "GroupId1",
-                    "GroupId2",
+                    "GroupId2"
                 ]
                 ```
         * if the jwt is invalid or the client_id is not the same as the client_id in the jwt:
@@ -196,7 +196,7 @@ The document tries to introduce the API endpoints of the backend. The document i
         * Body:
             ```json
             {
-                "company_name":"COMPANY_NAME(STRING)",
+                "company_name":"COMPANY_NAME(STRING)"
             }
             ```
     * Response:
@@ -235,7 +235,7 @@ The document tries to introduce the API endpoints of the backend. The document i
         * Body:
             ```json
             {
-                "group_name":"GROUP_NAME(STRING)",
+                "group_name":"GROUP_NAME(STRING)"
             }
             ```
     * Response:
@@ -261,3 +261,37 @@ The document tries to introduce the API endpoints of the backend. The document i
             * HTTP code: 500 internal server error
             * BODY:
                 empty
+
+* POST /api/companies/{companyName}/members:
+    * Description: Add a member to the company
+    * Request:
+        * Header: Authorization Bearer jwt string
+        * Body:
+            ```json
+            {
+                "email":"CLIENT_EMAIL(STRING)"
+            }
+            ```
+    * Response:
+        * if the member is added successfully:
+            * HTTP code: 204
+            * BODY:
+                empty
+        * if JWT is invalid | Client has no permission to add a member to the company:
+            * HTTP code: 401 unauthorized
+            * BODY:
+                empty
+        * if Client is not found:
+            * HTTP code: 400 bad request
+            * BODY:
+                empty
+        * if the member is not found:
+            * HTTP code: 404 not found
+            * BODY:
+                empty
+        * Other errors:
+            * HTTP code: 500 internal server error
+            * BODY:
+                empty
+* PUT
+
