@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public record Client(
+        String version,
         String client_name,
         String passwd_encrypted,
         String client_email,
@@ -17,8 +18,8 @@ public record Client(
         List<String> group_owners,
         List<String> group_admins,
         List<String> group_write_members,
-        List<String> group_members,
-        String version
+        List<String> group_members
+
 )
 {
     private static ArrayList<String> getArrayList(String[] arr)
@@ -32,7 +33,9 @@ public record Client(
     public Client(String clientEmail, Row row)
     {
 
-        this( row.getCells("default","client_name").get(0).getValue().toStringUtf8(),
+        this(
+                row.getCells("default","version").get(0).getValue().toStringUtf8(),
+                row.getCells("default","clientName").get(0).getValue().toStringUtf8(),
                 row.getCells("default","passwd_encrypted").get(0).getValue().toStringUtf8(),
                 clientEmail,
                 getArrayList(row.getCells("default","company_owners").get(0).getValue().toStringUtf8().split(";;")),
@@ -41,8 +44,8 @@ public record Client(
                 getArrayList(row.getCells("default","group_owners").get(0).getValue().toStringUtf8().split(";;")),
                 getArrayList(row.getCells("default","group_admins").get(0).getValue().toStringUtf8().split(";;")),
                 getArrayList(row.getCells("default","group_write_members").get(0).getValue().toStringUtf8().split(";;")),
-                getArrayList(row.getCells("default","group_members").get(0).getValue().toStringUtf8().split(";;")),
-                row.getCells("default","version").get(0).getValue().toStringUtf8()
+                getArrayList(row.getCells("default","group_members").get(0).getValue().toStringUtf8().split(";;"))
+
         );
     }
 }

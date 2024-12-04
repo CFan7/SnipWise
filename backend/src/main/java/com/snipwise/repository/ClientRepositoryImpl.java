@@ -47,7 +47,8 @@ public class ClientRepositoryImpl implements ClientRepository
         RowMutation mutation = RowMutation.create(
                 usersTableID,
                 client.client_email())
-                .setCell("default","client_name",client.client_name())
+                .setCell("default","version",client.version())
+                .setCell("default","clientName",client.client_name())
                 .setCell("default","passwd_encrypted",client.passwd_encrypted())
                 .setCell("default", "company_owners",String.join(";;",client.company_owners()))
                 .setCell("default","company_admins",String.join(";;",client.company_admins()))
@@ -73,7 +74,8 @@ public class ClientRepositoryImpl implements ClientRepository
                         .condition(filter)
                         .then(
                                 Mutation.create()
-                                        .setCell("default","client_name",client.client_name())
+                                        .setCell("default","version",String.valueOf(currentVersion + 1))
+                                        .setCell("default","clientName",client.client_name())
                                         .setCell("default","passwd_encrypted",client.passwd_encrypted())
                                         .setCell("default", "company_owners",String.join(";;",client.company_owners()))
                                         .setCell("default","company_admins",String.join(";;",client.company_admins()))
@@ -82,7 +84,7 @@ public class ClientRepositoryImpl implements ClientRepository
                                         .setCell("default","group_admins",String.join(";;",client.group_admins()))
                                         .setCell("default","group_write_members",String.join(";;",client.group_write_members()))
                                         .setCell("default","group_members",String.join(";;",client.group_members()))
-                                        .setCell("default","version",String.valueOf(currentVersion + 1))
+
                         );
 
         boolean mutationApplied = bigtableDataClient.checkAndMutateRow(conditionalRowMutation);

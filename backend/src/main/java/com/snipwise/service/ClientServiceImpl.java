@@ -272,22 +272,22 @@ public class ClientServiceImpl implements ClientService
     @Override
     public ClientCreateResponseDTO createClient(ClientCreateDTO clientCreateDTO) {
 
-        if (clientRepository.hasClientExists(clientCreateDTO.client_email()))
+        if (clientRepository.hasClientExists(clientCreateDTO.clientEmail()))
         {
             throw new ClientAlreadyExistException();
         }
-        Client client = new Client(
-                clientCreateDTO.client_name(),
+        Client client = new Client("0",
+                clientCreateDTO.clientName(),
                 BCrypt.hashpw(clientCreateDTO.passwd(),BCrypt.gensalt()),
-                clientCreateDTO.client_email(),
+                clientCreateDTO.clientEmail(),
                 new ArrayList<>(),
                 new ArrayList<>(),
                 new ArrayList<>(),
                 new ArrayList<>(),
                 new ArrayList<>(),
                 new ArrayList<>(),
-                new ArrayList<>(),
-                "0");
+                new ArrayList<>()
+                );
 
         try
         {
