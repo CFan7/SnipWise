@@ -56,7 +56,9 @@ public class ClientRepositoryImpl implements ClientRepository
                 .setCell("default","group_owners",String.join(";;",client.group_owners()))
                 .setCell("default","group_admins",String.join(";;",client.group_admins()))
                 .setCell("default","group_write_members",String.join(";;",client.group_write_members()))
-                .setCell("default","group_members",String.join(";;",client.group_members()));
+                .setCell("default","group_members",String.join(";;",client.group_members()))
+                .setCell("default","DateOfBirth",client.DateOfBirth().toString())
+                .setCell("default","PhoneNumber",client.PhoneNumber());;
 
         bigtableDataClient.mutateRow(mutation);
     }
@@ -84,7 +86,8 @@ public class ClientRepositoryImpl implements ClientRepository
                                         .setCell("default","group_admins",String.join(";;",client.group_admins()))
                                         .setCell("default","group_write_members",String.join(";;",client.group_write_members()))
                                         .setCell("default","group_members",String.join(";;",client.group_members()))
-
+                                        .setCell("default","DateOfBirth",client.DateOfBirth().toString())
+                                        .setCell("default","PhoneNumber",client.PhoneNumber())
                         );
 
         boolean mutationApplied = bigtableDataClient.checkAndMutateRow(conditionalRowMutation);

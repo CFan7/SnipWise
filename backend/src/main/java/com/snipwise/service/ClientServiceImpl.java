@@ -286,7 +286,9 @@ public class ClientServiceImpl implements ClientService
                 new ArrayList<>(),
                 new ArrayList<>(),
                 new ArrayList<>(),
-                new ArrayList<>()
+                new ArrayList<>(),
+                clientCreateDTO.DateOfBirth(),
+                clientCreateDTO.PhoneNumber()
                 );
 
         try

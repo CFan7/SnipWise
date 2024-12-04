@@ -126,23 +126,4 @@ public class ClientController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
-
-    /*@GetMapping("/{clientId}")
-    public ResponseEntity<ClientGetResponseDTO> getClient(@RequestHeader("Authorization") String jwtString, @PathVariable("clientId") String clientId)
-    {
-        try
-        {
-            ClientGetResponseDTO clientGetResponseDTO = clientService.getClient(jwtString, clientId);
-            return ResponseEntity.status(HttpStatus.OK).body(clientGetResponseDTO);
-        } catch (JWTException | ClientUnauthorizedException e)
-        {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
-        } catch (ClientNotExistException e)
-        {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        } catch (Exception e)
-        {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
-    }*/
 }

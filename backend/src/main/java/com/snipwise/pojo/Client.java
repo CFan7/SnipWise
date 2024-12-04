@@ -3,6 +3,7 @@ package com.snipwise.pojo;
 
 import com.google.cloud.bigtable.data.v2.models.Row;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -18,7 +19,9 @@ public record Client(
         List<String> group_owners,
         List<String> group_admins,
         List<String> group_write_members,
-        List<String> group_members
+        List<String> group_members,
+        LocalDate DateOfBirth,
+        String PhoneNumber
 
 )
 {
@@ -44,7 +47,9 @@ public record Client(
                 getArrayList(row.getCells("default","group_owners").get(0).getValue().toStringUtf8().split(";;")),
                 getArrayList(row.getCells("default","group_admins").get(0).getValue().toStringUtf8().split(";;")),
                 getArrayList(row.getCells("default","group_write_members").get(0).getValue().toStringUtf8().split(";;")),
-                getArrayList(row.getCells("default","group_members").get(0).getValue().toStringUtf8().split(";;"))
+                getArrayList(row.getCells("default","group_members").get(0).getValue().toStringUtf8().split(";;")),
+                LocalDate.parse(row.getCells("default","DateOfBirth").get(0).getValue().toStringUtf8()),
+                row.getCells("default","PhoneNumber").get(0).getValue().toStringUtf8()
 
         );
     }
