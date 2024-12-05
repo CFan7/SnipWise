@@ -87,6 +87,8 @@ public class URLServiceImpl implements URLService
             throw new IllegalArgumentException("Expiration time is in the past");
         }
         String short_url = "";
+        Group group = groupService.getGroupByGroupId(entity.groupId());
+
         if(entity.suffix().isEmpty())
         {
             boolean isExist = true;
@@ -94,7 +96,7 @@ public class URLServiceImpl implements URLService
             {
                 try
                 {
-                    short_url = "http://localhost:8080/s/" + UUID.randomUUID().toString().replace("-", "").substring(0, 12);
+                    short_url = "https://"+group.company_name()+".snip-wise.com/s/" + UUID.randomUUID().toString().replace("-", "").substring(0, 12);
                     getURLRecord(short_url);
                 }
                 catch(URLRecordNotExistException e)
@@ -105,10 +107,7 @@ public class URLServiceImpl implements URLService
         }
         else
         {
-            //Group group = groupService.getGroupByGroupId(entity.groupId());
-            //String companyName = group.company_name();
-            //String short_url = "http://"+companyPrefix+".snip-wise.com/s/" + entity.suffix;
-            short_url = "http://localhost:8080/s/" + entity.suffix();
+            short_url = "https://"+group.company_name()+".snip-wise.com/s/" + entity.suffix();
             try
             {
                 getURLRecord(short_url);
