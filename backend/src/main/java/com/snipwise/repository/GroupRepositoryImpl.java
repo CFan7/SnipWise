@@ -28,7 +28,7 @@ public class GroupRepositoryImpl implements GroupRepository
         {
             throw new GroupNotExistException();
         }
-        return new Group(row);
+        return new Group(groupId,row);
 
     }
 
@@ -42,11 +42,14 @@ public class GroupRepositoryImpl implements GroupRepository
         String group_write_members = String.join(";;", group.write_members());
 
         RowMutation rowMutation = RowMutation.create(usersTableID, group.group_id())
+                .setCell("default","version",group.version())
                 .setCell("default","group_name",group.group_name())
-                .setCell("default","company_id",group.company_name())
+                .setCell("default","company_name",group.company_name())
+                .setCell("default","owner",group.owner())
                 .setCell("default","admins",group_admins)
                 .setCell("default","write_members",group_write_members)
-                .setCell("default","members",group_members);
+                .setCell("default","members",group_members)
+                ;
 
         bigtableDataClient.mutateRow(rowMutation);
 

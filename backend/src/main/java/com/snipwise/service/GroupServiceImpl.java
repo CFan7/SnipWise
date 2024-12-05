@@ -74,15 +74,15 @@ public class GroupServiceImpl implements GroupService
         ArrayList<String> members = new ArrayList<>();
         members.add(clientEmail);
 
-        Group group = new Group(
+        Group group = new Group("0",
                 uuid,
                 groupCreateDTO.group_name,
                 companyName,
                 clientEmail,
                 admins,
                 write_members,
-                members,
-                "0"
+                members
+
         );
         groupRepository.createGroup(group);
         companyService.addGroupToCompany(companyName, uuid);
