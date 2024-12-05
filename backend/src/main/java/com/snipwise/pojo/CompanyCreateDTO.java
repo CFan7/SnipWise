@@ -1,9 +1,10 @@
 package com.snipwise.pojo;
 
-import jakarta.persistence.*;
 
-public class CompanyCreateDTO
+public record CompanyCreateDTO
+(
+    String company_name
+)
 {
-    @Column(name = "company_name")
-    public String company_name;
+
 }

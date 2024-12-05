@@ -2,22 +2,22 @@ package com.snipwise.controller;
 
 
 import com.snipwise.exception.ClientNotExistException;
+import com.snipwise.exception.ClientUnauthorizedException;
 import com.snipwise.exception.CompanyAlreadyExistException;
 import com.snipwise.pojo.*;
 
 import com.snipwise.service.CompanyService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/companies")
 public class CompanyController
 {
-
     @Autowired
     private CompanyService companyService;
 
@@ -26,7 +26,7 @@ public class CompanyController
     {
         try
         {
-            CompanyCreateResponseDTO companyCreateResponseDTO = companyService.createCompany(jwtString,companyCreateDTO);
+            CompanyCreateResponseDTO companyCreateResponseDTO = companyService.createCompany(jwtString, companyCreateDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(companyCreateResponseDTO);
         }
         //jwt
@@ -35,11 +35,10 @@ public class CompanyController
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
         //company name already exist || fail to write record to the db
-        catch (CompanyAlreadyExistException | OptimisticLockingFailureException e)
+        catch (CompanyAlreadyExistException e)
         {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
-        }
-        catch (ClientNotExistException e)
+        } catch (ClientNotExistException e)
         {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
@@ -49,111 +48,99 @@ public class CompanyController
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
-    /*
-    @PostMapping("/login")
-    public ResponseEntity<ClientLoginResponseDTO> login(@RequestBody ClientLoginDTO client_login_dto)
+    @PostMapping("/{companyName}/members")
+    public ResponseEntity<Void> addMember(
+            @RequestHeader("Authorization") String jwtString,
+            @PathVariable String companyName,
+            @RequestBody CompanyAddMemberDTO companyAddMemberDTO
+            )
     {
-        Client client = clientRepository.getClientByEmail(client_login_dto.client_email);
-        if (client == null)
-        {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
-        }
-        else
-        {
-            if(BCrypt.checkpw(client_login_dto.passwd,client.passwd_encrypted))
-            {
-
-
-                Signer signer = HMACSigner.newSHA256Signer(JWT_SECRET);
-                ZonedDateTime zonedDateTime = ZonedDateTime.now(ZoneOffset.UTC);
-                JWT jwt = new JWT().setIssuer("snip-wise.com")
-                        .setSubject(client.client_id)
-                        .setExpiration(ZonedDateTime.now(ZoneOffset.UTC).plusMinutes(5));
-                String encodedJWT = JWT.getEncoder().encode(jwt, signer);
-
-                ClientLoginResponseDTO clientLoginResponseDTO = new ClientLoginResponseDTO(client.client_id, encodedJWT,zonedDateTime.toString()
-                );
-
-                return ResponseEntity.status(HttpStatus.OK).body(clientLoginResponseDTO);
-            }
-            else
-            {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
-            }
-        }
-    }
-
-    @GetMapping("/{clientId}")
-    public ResponseEntity<ClientGetResponseDTO> getClient(@RequestHeader("Authorization") String jwtString, @PathVariable("clientId") String clientId)
-    {
-        String jwtString_pure = jwtString.substring(7);// remove "Bearer "
-        Verifier verifier = HMACVerifier.newVerifier(JWT_SECRET);
         try
         {
-            JWT jwt = JWT.getDecoder().decode(jwtString_pure, verifier);
-            if (!Objects.equals(jwt.subject, clientId))
-            {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
-            }
-            else
-            {
-                Client client = clientRepository.getClientByClientId(clientId);
-                if (client == null)
-                {
-                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
-                } else
-                {
-                    ClientGetResponseDTO clientGetDTO = new ClientGetResponseDTO(client.client_id, client.client_name, client.client_email);
-                    return ResponseEntity.status(HttpStatus.OK).body(clientGetDTO);
-                }
-            }
-
+            companyService.addMember(jwtString, companyName, companyAddMemberDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body(null);
         }
-        catch(io.fusionauth.jwt.JWTExpiredException e)
+        //jwt
+        catch (io.fusionauth.jwt.JWTException | ClientUnauthorizedException e)
         {
-            // Expires
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
+        //company name already exist || fail to write record to the db
+        catch (ClientNotExistException| IllegalArgumentException e)
+        {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+        //other exceptions
         catch (Exception e)
         {
-            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+    @PutMapping("/{companyName}/members/{clientEmail}")
+    public ResponseEntity<String> updateMember(
+            @RequestHeader("Authorization") String jwtString,
+            @PathVariable String companyName,
+            @PathVariable String clientEmail,
+            @RequestBody CompanyModifyMemberDTO companyModifyMemberDTO)
+    {
+        try
+        {
+            companyService.updateMember(jwtString, companyName,clientEmail, companyModifyMemberDTO);
+            return ResponseEntity.status(HttpStatus.OK).body(null);
+        }
+        //jwt
+        catch (io.fusionauth.jwt.JWTException | ClientUnauthorizedException e)
+        {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
-
-    }
-    */
-}
-//@GetMapping
-    //public List<User> getAllUsers() {
-    //    return userRepository.findAll();
-    //}
-
-    //@GetMapping("/{id}")
-    //public
-    //ResponseEntity<User> getUserById(@PathVariable Long id) {
-    //    Optional<User> user = userRepository.findById(id);
-    //    return user.map(ResponseEntity::ok)
-    //            .or
-    //    ElseGet(() -> ResponseEntity.notFound().build());
-    //}
-
-    /*@PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
-        Optional<User> existingUse  
-        r = userRepository.findById(id);
-        if (existingUser.isPresent()) {
-            user.setId(id);
-            User updatedUser = userRepository.save(user);
-            return ResponseEntity.ok(updatedUser);
-        } else {
-            return ResponseEntity.notFound().build();
+        //company name already exist || fail to write record to the db
+        catch (ClientNotExistException e)
+        {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+        catch (IllegalArgumentException e)
+        {
+            //return info about the error
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+        //other exceptions
+        catch (Exception e)
+        {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
-    @DeleteMapping("/{id}")
-    public
-    eEntity<Void> deleteUser(@PathVariable Long id) {
-        userRepository.deleteById(id);
-        return ResponseEntity.noContent().
-        build();
-    }*/
+    @DeleteMapping("/{companyName}/members/{clientEmail}")
+    public ResponseEntity<String> deleteMember(
+            @RequestHeader("Authorization") String jwtString,
+            @PathVariable String companyName,
+            @PathVariable String clientEmail)
+    {
+        try
+        {
+            companyService.deleteMember(jwtString, companyName,clientEmail);
+            return ResponseEntity.status(HttpStatus.OK).body(null);
+        }
+        //jwt
+        catch (io.fusionauth.jwt.JWTException | ClientUnauthorizedException e)
+        {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+        //company name already exist || fail to write record to the db
+        catch (ClientNotExistException e)
+        {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+        catch (IllegalArgumentException e)
+        {
+            //return info about the error
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+        //other exceptions
+        catch (Exception e)
+        {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+}

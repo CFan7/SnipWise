@@ -1,23 +1,33 @@
 package com.snipwise.pojo;
 
-public class URLCreateDTO
+/*public record URLCreateDTO
 {
-    public String short_url;
+    public String suffix;
     public String original_url;
-    public Long expiration_time;
+    public Long expiration_time_unix;
     public Boolean isActivated;
-    public String group_id;
+    public String groupId;
 
-    public URLCreateDTO(String short_url,String original_url,
-    Long expiration_time,
-    Boolean isDeleted,
+    public URLCreateDTO(String suffix,String original_url,
+                        String expiration_time,
     Boolean isActivated,
-    String group_id)
+    String groupId)
     {
-        this.short_url = short_url;
+        this.suffix = suffix;
         this.original_url = original_url;
         this.expiration_time = expiration_time;
         this.isActivated = isActivated;
-        this.group_id = group_id;
+        this.groupId = groupId;
     }
+}
+
+ */
+public record URLCreateDTO(
+        String suffix,
+        String original_url,
+        Long expiration_time_unix,
+        Boolean isActivated,
+        String groupId
+)
+{
 }

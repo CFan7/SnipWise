@@ -2,9 +2,7 @@ package com.snipwise.service;
 
 import com.snipwise.exception.*;
 import com.snipwise.pojo.*;
-import com.snipwise.repository.BigtableRepository;
-import com.snipwise.repository.ClientRepository;
-import com.snipwise.repository.GroupRepository;
+import com.snipwise.repository.URLRepository;
 import io.fusionauth.jwt.Verifier;
 import io.fusionauth.jwt.domain.JWT;
 import io.fusionauth.jwt.hmac.HMACVerifier;
@@ -12,13 +10,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 public class URLServiceImpl implements URLService
 {
     @Autowired
-    private ClientRepository clientRepository;
+    private ClientService clientService;
     @Autowired
-    private BigtableRepository bigtableRepository;
+    private URLRepository urlRepository;
 
     @Autowired
     GroupService groupService;
@@ -27,81 +27,111 @@ public class URLServiceImpl implements URLService
     private String JWT_SECRET;
 
     @Override
-    public String getURLRequest(String shortURL)
+    public String getOriginalURL(String shortURL)
     {
-        URL query_result = bigtableRepository.getRecordByShortURL(shortURL);
-        if (query_result == null)
+        try
+        {
+            URL query_result = urlRepository.getRecordByShortURL(shortURL);
+            if (!query_result.isActivated())
+            {
+                throw new URLRecordNotActivatedException();
+            }
+            else
+            {
+                return query_result.original_url();
+            }
+        }
+        catch (URLRecordNotExistException e)
         {
             throw new URLRecordNotExistException();
         }
-        else if (query_result.isDeleted())
+    }
+    @Override
+    public URL getURLRecord(String shortURL)
+    {
+        try
         {
-            throw new URLRecordDeletedException();
+            return urlRepository.getRecordByShortURL(shortURL);
         }
-        else if (!query_result.isActivated())
+        catch (URLRecordNotExistException e)
         {
-            throw new URLRecordNotActivatedException();
-        }
-        else
-        {
-            return query_result.original_url();
+            throw new URLRecordNotExistException();
         }
     }
 
+
     @Override
-    public void createURLRecord(String jwtString, URLCreateDTO entity)
+    public URLCreateResponseDTO createURLRecord(String jwtString, URLCreateDTO entity)
     {
         String jwtString_pure = jwtString.substring(7);// remove "Bearer "
         Verifier verifier = HMACVerifier.newVerifier(JWT_SECRET);
 
         JWT jwt = JWT.getDecoder().decode(jwtString_pure, verifier);
-        String clientId = jwt.subject;
-        Client client = clientRepository.getClientByClientId(clientId);
+        String clientEmail = jwt.subject;
 
-        if (client == null)
+        if (!clientService.isClientExist(clientEmail))
         {
             throw new ClientNotExistException();
         }
-
-        Group group = groupService.getGroupByGroupId(entity.group_id);
-        if (group == null)
+        if(!groupService.hasGroupExists(entity.groupId()))
         {
             throw new GroupNotExistException();
         }
-        String permission = groupService.getRelationBetweenClientAndGroup(clientId,entity.group_id);
-        if (permission == null|| !(permission.equals("w") || permission.equals("x")))
+        if (!clientService.hasClientWriteMemberOfGroup(clientEmail, entity.groupId()))
         {
             throw new ClientUnauthorizedException();
         }
-        if(getURLRequest(entity.short_url) != null)
+        Long current_time_s = System.currentTimeMillis() / 1000;
+        if (entity.expiration_time_unix() < current_time_s)
         {
-            throw new URLRecordAlreadyExistException();
+            throw new IllegalArgumentException("Expiration time is in the past");
         }
+        String short_url = "";
+        Group group = groupService.getGroupByGroupId(entity.groupId());
 
+        if(entity.suffix().isEmpty())
+        {
+            boolean isExist = true;
+            while(isExist)
+            {
+                try
+                {
+                    short_url = "https://"+group.company_name()+".snip-wise.com/s/" + UUID.randomUUID().toString().replace("-", "").substring(0, 12);
+                    getURLRecord(short_url);
+                }
+                catch(URLRecordNotExistException e)
+                {
+                    isExist = false;
+                }
+            }
+        }
+        else
+        {
+            short_url = "https://"+group.company_name()+".snip-wise.com/s/" + entity.suffix();
+            try
+            {
+                getURLRecord(short_url);
+                throw new URLRecordAlreadyExistException();//not activated => also exist
+            }
+            catch(URLRecordNotExistException e)
+            {
+                // URL record not exist, can create
+            }
+        }
         URL urlEntity = new URL(
-                entity.short_url,
-                entity.original_url,
-                entity.expiration_time,
-                Boolean.FALSE,
-                entity.isActivated,
-                entity.group_id,
-                clientId
+                short_url,
+                entity.original_url(),
+                entity.expiration_time_unix(),
+                entity.isActivated(),
+                entity.groupId()
         );
 
-        bigtableRepository.save(urlEntity);
-        URLCreateResponseDTO urlCreateResponseDTO =new URLCreateResponseDTO(
-                entity.short_url,
-                entity.original_url,
-                entity.expiration_time,
-                Boolean.FALSE,
-                entity.isActivated,
-                entity.group_id,
-                clientId
+        urlRepository.createURLRecord(urlEntity);
 
-        );
+        return new URLCreateResponseDTO(urlEntity);
     }
     @Override
-    public void deleteURLRecord(String jwtString, String short_url)
+    public void deleteURLRecord(String jwtString, String short_url) throws URLRecordNotExistException, ClientNotExistException, GroupNotExistException, ClientUnauthorizedException
     {
         String jwtString_pure = jwtString.substring(7);
         Verifier verifier = HMACVerifier.newVerifier(JWT_SECRET);
@@ -109,25 +139,28 @@ public class URLServiceImpl implements URLService
         JWT jwt = JWT.getDecoder().decode(jwtString_pure, verifier);
 
         String clientId = jwt.subject;
-        Client client = clientRepository.getClientByClientId(clientId);
-        if (client == null)
+        if (!clientService.isClientExist(clientId))
         {
             throw new ClientNotExistException();
         }
 
-        URL urlEntity = bigtableRepository.getRecordByShortURL(short_url);
-        if (urlEntity == null)
+        try
+        {
+            URL urlEntity = getURLRecord(short_url);
+            String groupId = urlEntity.groupId();
+            if (!groupService.hasGroupExists(groupId))
+            {
+                throw new GroupNotExistException();
+            }
+            if(!clientService.hasClientAdminOfGroup(clientId,groupId))
+            {
+                throw new ClientUnauthorizedException();
+            }
+            urlRepository.deleteURLRecord(short_url);
+        }
+        catch (URLRecordNotExistException e)
         {
             throw new URLRecordNotExistException();
         }
-
-
-        String permission = groupService.getRelationBetweenClientAndGroup(clientId,urlEntity.group_id());
-        if (permission == null|| !(permission.equals("w") || permission.equals("x")))
-        {
-            throw new ClientUnauthorizedException();
-        }
-
-        bigtableRepository.delete(short_url);
     }
 }

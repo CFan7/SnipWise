@@ -17,7 +17,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.util.Objects;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class ClientServiceImpl implements ClientService
@@ -30,80 +31,309 @@ public class ClientServiceImpl implements ClientService
     private String JWT_SECRET;
 
     @Override
-    public Boolean isClientExistById(String clientId)
+    public Boolean isClientExist(String email)
     {
-        Client client = clientRepository.getClientByClientId(clientId);
-        return !Objects.isNull(client);
+        return clientRepository.hasClientExists(email);
     }
     @Override
-    public Boolean isClientExistByEmail(String email)
+    public Boolean hasClientOwnerOfCompany(String email, String companyName)
     {
-        return clientRepository.isClientExists(email);
+        Client client = clientRepository.getClient(email);//raise exception if client not exist
+        return client.company_owners().contains(companyName);
+    }
+    @Override
+    public Boolean hasClientAdminOfCompany(String email, String companyName)
+    {
+        Client client = clientRepository.getClient(email);//raise exception if client not exist
+        return client.company_admins().contains(companyName);
+    }
+    @Override
+    public Boolean hasClientMemberOfCompany(String email, String companyName)
+    {
+        Client client = clientRepository.getClient(email);//raise exception if client not exist
+        return client.company_members().contains(companyName);
+    }
+    @Override
+    public Boolean hasClientOwnerOfGroup(String email, String groupId)
+    {
+        Client client = clientRepository.getClient(email);//raise exception if client not exist
+        return client.group_owners().contains(groupId);
+    }
+    @Override
+    public Boolean hasClientAdminOfGroup(String email, String groupId)
+    {
+        Client client = clientRepository.getClient(email);//raise exception if client not exist
+        return client.group_admins().contains(groupId);
+    }
+    @Override
+    public Boolean hasClientWriteMemberOfGroup(String email, String groupId)
+    {
+        Client client = clientRepository.getClient(email);//raise exception if client not exist
+        return client.group_write_members().contains(groupId);
+    }
+    @Override
+    public Boolean hasClientMemberOfGroup(String email, String groupId)
+    {
+        Client client = clientRepository.getClient(email);//raise exception if client not exist
+        return client.group_members().contains(groupId);
+    }
+
+    @Override
+    public List<String> getCompanyOwners(String jwtString, String email) {
+        String jwtString_pure = jwtString.substring(7);// remove "Bearer "
+        Verifier verifier = HMACVerifier.newVerifier(JWT_SECRET);
+
+        // If jwt is invalid or has expired, will throw an exception here
+        JWT jwt = JWT.getDecoder().decode(jwtString_pure, verifier);
+
+        String client_email = jwt.subject;
+        if(!client_email.equals(email))
+        {
+            throw new ClientUnauthorizedException();
+        }
+        Client client = clientRepository.getClient(email);
+        if (client == null)
+        {
+            throw new ClientNotExistException();
+        }
+        return client.company_owners();
+    }
+
+    @Override
+    public List<String> getCompanyAdmins(String jwtString, String email) {
+        String jwtString_pure = jwtString.substring(7);// remove "Bearer "
+        Verifier verifier = HMACVerifier.newVerifier(JWT_SECRET);
+
+        // If jwt is invalid or has expired, will throw an exception here
+        JWT jwt = JWT.getDecoder().decode(jwtString_pure, verifier);
+
+        String client_email = jwt.subject;
+        if(!client_email.equals(email))
+        {
+            throw new ClientUnauthorizedException();
+        }
+        Client client = clientRepository.getClient(email);
+        if (client == null)
+        {
+            throw new ClientNotExistException();
+        }
+        return client.company_admins();
+    }
+
+    @Override
+    public List<String> getCompanyMembers(String jwtString, String email) {
+        String jwtString_pure = jwtString.substring(7);// remove "Bearer "
+        Verifier verifier = HMACVerifier.newVerifier(JWT_SECRET);
+
+        // If jwt is invalid or has expired, will throw a exception here
+        JWT jwt = JWT.getDecoder().decode(jwtString_pure, verifier);
+
+        String client_email = jwt.subject;
+        if(!client_email.equals(email))
+        {
+            throw new ClientUnauthorizedException();
+        }
+        Client client = clientRepository.getClient(email);
+        if (client == null)
+        {
+            throw new ClientNotExistException();
+        }
+        return client.company_members();
+    }
+
+    @Override
+    public List<String> getGroupOwners(String jwtString, String clientEmail) {
+        String jwtString_pure = jwtString.substring(7);// remove "Bearer "
+        Verifier verifier = HMACVerifier.newVerifier(JWT_SECRET);
+
+        // If jwt is invalid or has expired, will throw a exception here
+        JWT jwt = JWT.getDecoder().decode(jwtString_pure, verifier);
+        String clientEmailJwt = jwt.subject;
+        if(!clientEmailJwt.equals(clientEmail))
+        {
+            throw new ClientUnauthorizedException();
+        }
+        Client client = clientRepository.getClient(clientEmail);
+        if (client == null)
+        {
+            throw new ClientNotExistException();
+        }
+        return client.group_owners();
+    }
+
+    @Override
+    public List<String> getGroupAdmins(String jwtString, String clientEmail) {
+        String jwtString_pure = jwtString.substring(7);// remove "Bearer "
+        Verifier verifier = HMACVerifier.newVerifier(JWT_SECRET);
+
+        // If jwt is invalid or has expired, will throw a exception here
+        JWT jwt = JWT.getDecoder().decode(jwtString_pure, verifier);
+        String clientEmailJwt = jwt.subject;
+        if(!clientEmailJwt.equals(clientEmail))
+        {
+            throw new ClientUnauthorizedException();
+        }
+        Client client = clientRepository.getClient(clientEmail);
+        if (client == null)
+        {
+            throw new ClientNotExistException();
+        }
+        return client.group_admins();
+    }
+
+    @Override
+    public List<String> getGroupWriteMembers(String jwtString, String clientEmail) {
+        String jwtString_pure = jwtString.substring(7);// remove "Bearer "
+        Verifier verifier = HMACVerifier.newVerifier(JWT_SECRET);
+
+        // If jwt is invalid or has expired, will throw a exception here
+        JWT jwt = JWT.getDecoder().decode(jwtString_pure, verifier);
+        String clientEmailJwt = jwt.subject;
+        if(!clientEmailJwt.equals(clientEmail))
+        {
+            throw new ClientUnauthorizedException();
+        }
+        Client client = clientRepository.getClient(clientEmail);
+        if (client == null)
+        {
+            throw new ClientNotExistException();
+        }
+        return client.group_write_members();
+    }
+
+    @Override
+    public Client getClient(String email) {
+        return clientRepository.getClient(email);
+    }
+
+    @Override
+    public void updateClient(Client client) {
+        clientRepository.updateClient(client);
+    }
+
+    @Override
+    public List<String> getGroupMembers(String jwtString, String clientEmail) {
+        String jwtString_pure = jwtString.substring(7);// remove "Bearer "
+        Verifier verifier = HMACVerifier.newVerifier(JWT_SECRET);
+
+        // If jwt is invalid or has expired, will throw a exception here
+        JWT jwt = JWT.getDecoder().decode(jwtString_pure, verifier);
+        String clientEmailJwt = jwt.subject;
+        if(!clientEmailJwt.equals(clientEmail))
+        {
+            throw new ClientUnauthorizedException();
+        }
+        Client client = clientRepository.getClient(clientEmail);
+        if (client == null)
+        {
+            throw new ClientNotExistException();
+        }
+        return client.group_members();
+    }
+
+    @Override
+    public void initClientForGroup(String email, String groupName)
+    {
+        Client client = clientRepository.getClient(email);
+        if (client == null)
+        {
+            throw new ClientNotExistException();
+        }
+        client.group_owners().add(groupName);
+        client.group_admins().add(groupName);
+        client.group_write_members().add(groupName);
+        client.group_members().add(groupName);
+        clientRepository.updateClient(client);
+    }
+
+    @Override
+    public void initClientForCompany(String email, String companyName)
+    {
+        Client client = clientRepository.getClient(email);
+        if (client == null)
+        {
+            throw new ClientNotExistException();
+        }
+        client.company_owners().add(companyName);
+        client.company_admins().add(companyName);
+        client.company_members().add(companyName);
+        clientRepository.updateClient(client);
+    }
+    public Boolean hasClientOwnershipOf(String email,String companyName)
+    {
+        Client client = clientRepository.getClient(email);
+        if (client == null)
+        {
+            throw new ClientNotExistException();
+        }
+        return client.company_owners().contains(companyName);
     }
 
     @Override
     public ClientCreateResponseDTO createClient(ClientCreateDTO clientCreateDTO) {
 
-        if (clientRepository.isClientExists(clientCreateDTO.client_email))
+        if (clientRepository.hasClientExists(clientCreateDTO.clientEmail()))
         {
             throw new ClientAlreadyExistException();
         }
-        Client client = new Client();
-        client.client_name = clientCreateDTO.client_name;
-        client.client_email = clientCreateDTO.client_email;
-        client.passwd_encrypted = BCrypt.hashpw(clientCreateDTO.passwd,BCrypt.gensalt());
-        Client savedUser = clientRepository.save(client);
+        Client client = new Client("0",
+                clientCreateDTO.clientName(),
+                BCrypt.hashpw(clientCreateDTO.passwd(),BCrypt.gensalt()),
+                clientCreateDTO.clientEmail(),
+                new ArrayList<>(),
+                new ArrayList<>(),
+                new ArrayList<>(),
+                new ArrayList<>(),
+                new ArrayList<>(),
+                new ArrayList<>(),
+                new ArrayList<>(),
+                clientCreateDTO.DateOfBirth(),
+                clientCreateDTO.PhoneNumber()
+                );
 
-        ClientCreateResponseDTO responseDTO = new ClientCreateResponseDTO();
-        responseDTO.client_id = savedUser.client_id;
-        responseDTO.client_email = savedUser.client_email;
-        responseDTO.client_name = savedUser.client_name;
-        return responseDTO;
+        try
+        {
+            clientRepository.createClient(client);
+        }
+        catch (ClientAlreadyExistException e)
+        {
+            throw new ClientAlreadyExistException();
+        }
+        catch(Exception e)
+        {
+            throw new RuntimeException();
+        }
+
+
+        return new ClientCreateResponseDTO(
+                client.client_name(),
+                client.client_email()
+        );
     }
 
     @Override
     public ClientLoginResponseDTO login(ClientLoginDTO clientLoginDTO)
     {
-        Client client = clientRepository.getClientByEmail(clientLoginDTO.client_email);
+        Client client = clientRepository.getClient(clientLoginDTO.client_email());
         if (client == null)
         {
             throw new ClientNotExistException();
         }
-        if(!BCrypt.checkpw(clientLoginDTO.passwd,client.passwd_encrypted))
+        if(!BCrypt.checkpw(clientLoginDTO.passwd(),client.passwd_encrypted()))
         {
             throw new ClientNotExistException();
         }
         Signer signer = HMACSigner.newSHA256Signer(JWT_SECRET);
         ZonedDateTime zonedDateTime = ZonedDateTime.now(ZoneOffset.UTC);
         JWT jwt = new JWT().setIssuer("snip-wise.com")
-                .setSubject(client.client_id)
+                .setSubject(client.client_email())
                 .setExpiration(ZonedDateTime.now(ZoneOffset.UTC).plusMinutes(15));
         String encodedJWT = JWT.getEncoder().encode(jwt, signer);
         return new ClientLoginResponseDTO(
-                client.client_id,
+                client.client_email(),
                 encodedJWT,
                 zonedDateTime.toString()
                 );
-    }
-
-    @Override
-    public ClientGetResponseDTO getClient(String jwtString, String clientId)
-    {
-        String jwtString_pure = jwtString.substring(7);// remove "Bearer "
-        Verifier verifier = HMACVerifier.newVerifier(JWT_SECRET);
-
-        JWT jwt = JWT.getDecoder().decode(jwtString_pure, verifier);
-        if (!Objects.equals(jwt.subject, clientId))
-        {
-            throw new ClientUnauthorizedException();
-        }
-        Client client = clientRepository.getClientByClientId(clientId);
-        if (client == null)
-        {
-            throw new ClientNotExistException();
-        }
-        return new ClientGetResponseDTO(client.client_id, client.client_name, client.client_email);
-
     }
 }
 

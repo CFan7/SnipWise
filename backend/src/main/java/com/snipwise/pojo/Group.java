@@ -1,19 +1,43 @@
 package com.snipwise.pojo;
+import com.google.cloud.bigtable.data.v2.models.Row;
 
-import jakarta.persistence.*;
 
-@Entity
-@Table(name="group_info")
-public class Group
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public record Group
+        (
+                String group_id,
+                String group_name,
+                String company_name,
+                String owner,
+                List<String> admins,
+                List<String> write_members,
+                List<String> members,
+                String version
+        )
 {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "group_id")
-    public String group_id;
+    private static ArrayList<String> getArrayList(String[] arr)
+    {
+        if (arr.length == 1 && arr[0].isEmpty())
+        {
+            return new ArrayList<>();
+        }
+        return new ArrayList<>(Arrays.asList(arr));
+    }
+    public Group(Row row)
+    {
+        this( row.getCells("default","groupId").get(0).getValue().toStringUtf8(),
+                row.getCells("default","group_name").get(0).getValue().toStringUtf8(),
+                row.getCells("default","company_name").get(0).getValue().toStringUtf8(),
+                row.getCells("default","owner").get(0).getValue().toStringUtf8(),
+                getArrayList(row.getCells("default","admins").get(0).getValue().toStringUtf8().split(";;")),
+                getArrayList(row.getCells("default","write_members").get(0).getValue().toStringUtf8().split(";;")),
+                getArrayList(row.getCells("default","members").get(0).getValue().toStringUtf8().split(";;")),
+                row.getCells("default","version").get(0).getValue().toStringUtf8()
+        );
 
-    @Column(name = "group_name")
-    public String group_name;
+    }
 
-    @Column(name = "company_id")
-    public String company_id;
 }
