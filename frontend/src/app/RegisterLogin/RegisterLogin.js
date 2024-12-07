@@ -52,19 +52,16 @@ const RegisterLogin = ({ onLogin }) => {
             <label>Username</label>
             <input type="text" name="username" value={formData.username} onChange={handleChange} required />
             
-            <label>Company</label>
-            <input type="text" name="company" value={formData.company} onChange={handleChange} required />
-            
             <label>Date of Birth</label>
             <input type="date" name="dob" value={formData.dob} onChange={handleChange} required />
+
+            <label>Phone</label>
+            <input type="tel" name="phone" value={formData.phone} onChange={handleChange} required />
           </>
         )}
         
         <label>Email</label>
         <input type="email" name="email" value={formData.email} onChange={handleChange} required />
-        
-        <label>Phone</label>
-        <input type="tel" name="phone" value={formData.phone} onChange={handleChange} required />
 
         <label>Password</label>
         <input type="password" name="password" value={formData.password} onChange={handleChange} required />

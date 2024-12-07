@@ -33,3 +33,6 @@ build/
 .vscode/
 scripts
 startdb.bat
+
+# frontend modules
+frontend/node_modules/
