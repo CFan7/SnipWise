@@ -8,14 +8,15 @@ import java.util.List;
 
 public record Group
         (
+                String version,
                 String group_id,
                 String group_name,
                 String company_name,
                 String owner,
                 List<String> admins,
                 List<String> write_members,
-                List<String> members,
-                String version
+                List<String> members
+
         )
 {
     private static ArrayList<String> getArrayList(String[] arr)
@@ -26,16 +27,17 @@ public record Group
         }
         return new ArrayList<>(Arrays.asList(arr));
     }
-    public Group(Row row)
+    public Group(String groupId,Row row)
     {
-        this( row.getCells("default","groupId").get(0).getValue().toStringUtf8(),
+        this(row.getCells("default","version").get(0).getValue().toStringUtf8(),
+                groupId,
                 row.getCells("default","group_name").get(0).getValue().toStringUtf8(),
                 row.getCells("default","company_name").get(0).getValue().toStringUtf8(),
                 row.getCells("default","owner").get(0).getValue().toStringUtf8(),
                 getArrayList(row.getCells("default","admins").get(0).getValue().toStringUtf8().split(";;")),
                 getArrayList(row.getCells("default","write_members").get(0).getValue().toStringUtf8().split(";;")),
-                getArrayList(row.getCells("default","members").get(0).getValue().toStringUtf8().split(";;")),
-                row.getCells("default","version").get(0).getValue().toStringUtf8()
+                getArrayList(row.getCells("default","members").get(0).getValue().toStringUtf8().split(";;"))
+
         );
 
     }

@@ -31,6 +31,11 @@ public class URLServiceImpl implements URLService
     {
         try
         {
+            //remove protocol
+            if(shortURL.startsWith("http://") || shortURL.startsWith("https://"))
+            {
+                shortURL = shortURL.substring(shortURL.indexOf("//")+2);
+            }
             URL query_result = urlRepository.getRecordByShortURL(shortURL);
             if (!query_result.isActivated())
             {
@@ -51,6 +56,11 @@ public class URLServiceImpl implements URLService
     {
         try
         {
+            //remove protocol
+            if(shortURL.startsWith("http://") || shortURL.startsWith("https://"))
+            {
+                shortURL = shortURL.substring(shortURL.indexOf("//")+2);
+            }
             return urlRepository.getRecordByShortURL(shortURL);
         }
         catch (URLRecordNotExistException e)
@@ -96,7 +106,7 @@ public class URLServiceImpl implements URLService
             {
                 try
                 {
-                    short_url = "https://"+group.company_name()+".snip-wise.com/s/" + UUID.randomUUID().toString().replace("-", "").substring(0, 12);
+                    short_url = group.company_name()+".snip-wise.com/s/" + UUID.randomUUID().toString().replace("-", "").substring(0, 12);
                     getURLRecord(short_url);
                 }
                 catch(URLRecordNotExistException e)
@@ -107,7 +117,7 @@ public class URLServiceImpl implements URLService
         }
         else
         {
-            short_url = "https://"+group.company_name()+".snip-wise.com/s/" + entity.suffix();
+            short_url = group.company_name()+".snip-wise.com/s/" + entity.suffix();
             try
             {
                 getURLRecord(short_url);
