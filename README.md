@@ -23,4 +23,5 @@ The class project is to design, implement, and deploy a URL Shortener Service.
 - **[React](https://react.dev/)** for web development
 - **[BigTable](https://cloud.google.com/bigtable)** for database
 - **[SpringBoot](https://spring.io/projects/spring-boot)** for backend
+- **[Apache JMeter](https://jmeter.apache.org/)** for load testing and latency 
 
