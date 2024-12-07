@@ -9,12 +9,12 @@ import java.util.List;
 public record Group
         (
                 String version,
-                String group_id,
-                String group_name,
+                String groupId,
+                String groupName,
                 String company_name,
                 String owner,
                 List<String> admins,
-                List<String> write_members,
+                List<String> writeMembers,
                 List<String> members
 
         )
@@ -31,11 +31,11 @@ public record Group
     {
         this(row.getCells("default","version").get(0).getValue().toStringUtf8(),
                 groupId,
-                row.getCells("default","group_name").get(0).getValue().toStringUtf8(),
-                row.getCells("default","company_name").get(0).getValue().toStringUtf8(),
+                row.getCells("default","groupName").get(0).getValue().toStringUtf8(),
+                row.getCells("default","companyName").get(0).getValue().toStringUtf8(),
                 row.getCells("default","owner").get(0).getValue().toStringUtf8(),
                 getArrayList(row.getCells("default","admins").get(0).getValue().toStringUtf8().split(";;")),
-                getArrayList(row.getCells("default","write_members").get(0).getValue().toStringUtf8().split(";;")),
+                getArrayList(row.getCells("default","writeMembers").get(0).getValue().toStringUtf8().split(";;")),
                 getArrayList(row.getCells("default","members").get(0).getValue().toStringUtf8().split(";;"))
 
         );

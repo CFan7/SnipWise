@@ -39,8 +39,8 @@ public class URLController
     {
         try
         {
-            urlService.createURLRecord(jwtString,entity);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+            URLCreateResponseDTO urlCreateResponseDTO = urlService.createURLRecord(jwtString,entity);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(urlCreateResponseDTO);
         }
         catch(io.fusionauth.jwt.JWTExpiredException e)
         {

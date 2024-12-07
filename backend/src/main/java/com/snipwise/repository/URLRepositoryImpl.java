@@ -17,20 +17,20 @@ public class URLRepositoryImpl implements URLRepository
     String usersTableID = "snip-wise";
 
     @Override
-    public URL getRecordByShortURL(String short_url)
+    public URL getRecordByShortURL(String shortUrl)
     {
-        Row row = bigtableDataClient.readRow(usersTableID, short_url);
+        Row row = bigtableDataClient.readRow(usersTableID, shortUrl);
         if (row == null)
         {
             throw new URLRecordNotExistException();
         }
-        return new URL(short_url,row);
+        return new URL(shortUrl,row);
 
     }
 
     @Override
     public void createURLRecord(URL entity) {
-        String short_url = entity.short_url();
+        String short_url = entity.shortUrl();
         if (bigtableDataClient.readRow(usersTableID, short_url) != null) {
             System.out.println(short_url + "already exists in table");
             return;
@@ -38,9 +38,9 @@ public class URLRepositoryImpl implements URLRepository
         RowMutation mutation = RowMutation.create(
                         usersTableID,
                         short_url)
-                .setCell("default", "original_url", entity.original_url())
-                .setCell("default", "expiration_time", Long.toString(entity.expiration_time_unix()))
-                .setCell("default","isActivated",entity.isActivated()?"true":"false")
+                .setCell("default", "originalUrl", entity.originalUrl())
+                .setCell("default", "expirationTime", entity.expirationTime().toEpochSecond())
+                .setCell("default","isActivated",entity.isActivated()?1L:0L)
                 .setCell("default","groupId",entity.groupId());
         bigtableDataClient.mutateRow(mutation);
     }

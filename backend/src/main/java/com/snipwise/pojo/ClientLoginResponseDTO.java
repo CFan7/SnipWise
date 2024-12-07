@@ -1,9 +1,9 @@
 package com.snipwise.pojo;
 
 public record ClientLoginResponseDTO(
-        String client_email,
+        String clientEmail,
         String jwt,
-        String expiration_time
+        String expirationTime
 )
 {
 }

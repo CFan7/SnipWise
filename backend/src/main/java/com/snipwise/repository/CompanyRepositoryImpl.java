@@ -7,6 +7,7 @@ import com.snipwise.exception.CompanyAlreadyExistException;
 import com.snipwise.exception.CompanyNotExistException;
 import com.snipwise.exception.OptimisticLockException;
 import com.snipwise.pojo.Company;
+import com.snipwise.pojo.Misc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -36,7 +37,7 @@ public class CompanyRepositoryImpl implements CompanyRepository
     public void createCompany(Company company)
     {
 
-        Row row = bigtableDataClient.readRow(usersTableID, company.company_name());
+        Row row = bigtableDataClient.readRow(usersTableID, company.companyName());
         if (row != null)
         {
             throw new CompanyAlreadyExistException();
@@ -45,10 +46,10 @@ public class CompanyRepositoryImpl implements CompanyRepository
         String company_admins = String.join(";;", company.admins());
         String company_members = String.join(";;", company.members());
 
-        RowMutation rowMutation = RowMutation.create(usersTableID, company.company_name())
-                .setCell("default","company_name",company.company_name())
-                .setCell("default","company_subscription_type",company.company_subscription_type())
-                .setCell("default","company_subscription_expiration_time",company.company_subscription_expiration_time())
+        RowMutation rowMutation = RowMutation.create(usersTableID, company.companyName())
+                .setCell("default","companyName",company.companyName())
+                .setCell("default","companySubscriptionType",company.companySubscriptionType())
+                .setCell("default","companySubscriptionExpirationTime", Misc.encodeZonedDateTime(company.companySubscriptionExpirationTime()))
                 .setCell("default","owner",company.owner())
                 .setCell("default","admins",company_admins)
                 .setCell("default","members",company_members)
@@ -70,13 +71,13 @@ public class CompanyRepositoryImpl implements CompanyRepository
                 .filter(Filters.FILTERS.value().range().startClosed(String.valueOf(currentVersion)).endOpen(String.valueOf(currentVersion + 1)));
         // Optimistic Locking
         ConditionalRowMutation conditionalRowMutation =
-                ConditionalRowMutation.create(usersTableID, company.company_name())
+                ConditionalRowMutation.create(usersTableID, company.companyName())
                         .condition(filter)
                         .then(
                                 Mutation.create()
-                                        .setCell("default","company_name",company.company_name())
-                                        .setCell("default","company_subscription_type",company.company_subscription_type())
-                                        .setCell("default","company_subscription_expiration_time",company.company_subscription_expiration_time())
+                                        .setCell("default","companyName",company.companyName())
+                                        .setCell("default","companySubscriptionType",company.companySubscriptionType())
+                                        .setCell("default","companySubscriptionExpirationTime", Misc.encodeZonedDateTime(company.companySubscriptionExpirationTime()))
                                         .setCell("default","owner",company.owner())
                                         .setCell("default","admins",company_admins)
                                         .setCell("default","members",company_members)

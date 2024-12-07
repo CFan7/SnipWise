@@ -38,6 +38,23 @@ public class ClientController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
+    @GetMapping("/{clientEmail}")
+    public ResponseEntity<ClientGetResponseDTO> getClient(@PathVariable("clientEmail") String clientEmail, @RequestHeader("Authorization") String jwtString)
+    {
+        try
+        {
+            ClientGetResponseDTO clientGetResponseDTO = clientService.getClient(clientEmail, jwtString);
+            return ResponseEntity.status(HttpStatus.OK).body(clientGetResponseDTO);
+        }
+        catch (ClientNotExistException e)
+        {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        catch (Exception e)
+        {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
     @PostMapping("/login")
     public ResponseEntity<ClientLoginResponseDTO> login(@RequestBody ClientLoginDTO client_login_dto)
     {

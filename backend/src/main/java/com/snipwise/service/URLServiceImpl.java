@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 @Service
@@ -43,7 +44,7 @@ public class URLServiceImpl implements URLService
             }
             else
             {
-                return query_result.original_url();
+                return query_result.originalUrl();
             }
         }
         catch (URLRecordNotExistException e)
@@ -91,8 +92,8 @@ public class URLServiceImpl implements URLService
         {
             throw new ClientUnauthorizedException();
         }
-        Long current_time_s = System.currentTimeMillis() / 1000;
-        if (entity.expiration_time_unix() < current_time_s)
+        ZonedDateTime current_time = ZonedDateTime.now();
+        if (entity.expirationTime().isBefore(current_time))
         {
             throw new IllegalArgumentException("Expiration time is in the past");
         }
@@ -130,8 +131,8 @@ public class URLServiceImpl implements URLService
         }
         URL urlEntity = new URL(
                 short_url,
-                entity.original_url(),
-                entity.expiration_time_unix(),
+                entity.originalUrl(),
+                entity.expirationTime(),
                 entity.isActivated(),
                 entity.groupId()
         );

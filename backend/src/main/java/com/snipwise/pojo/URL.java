@@ -1,21 +1,29 @@
 package com.snipwise.pojo;
 
 import com.google.cloud.bigtable.data.v2.models.Row;
+import com.google.type.DateTime;
 
+import java.nio.ByteBuffer;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import com.snipwise.pojo.Misc;
 public record URL(
-        String short_url,
-        String original_url,
-        Long expiration_time_unix,
+        String shortUrl,
+        String originalUrl,
+        ZonedDateTime expirationTime,
         Boolean isActivated,
         String groupId
 )
 {
-    public URL(String short_url, Row row)
+
+    public URL(String shortUrl, Row row)
     {
-        this(   short_url,
-                row.getCells("default","original_url").get(0).getValue().toStringUtf8(),
-                Long.parseLong(row.getCells("default","expiration_time").get(0).getValue().toStringUtf8()),
-                Boolean.parseBoolean(row.getCells("default","isActivated").get(0).getValue().toStringUtf8()),
+        this(   shortUrl,
+                row.getCells("default","originalUrl").get(0).getValue().toStringUtf8(),
+                Misc.parseZonedDateTime(row.getCells("default","expirationTime").get(0).getValue()),
+                Misc.parseBoolean(row.getCells("default","isActivated").get(0).getValue()),
                 row.getCells("default","groupId").get(0).getValue().toStringUtf8()
         );
     }

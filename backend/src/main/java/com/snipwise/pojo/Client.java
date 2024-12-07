@@ -10,19 +10,18 @@ import java.util.List;
 
 public record Client(
         String version,
-        String client_name,
-        String passwd_encrypted,
-        String client_email,
-        List<String> company_owners,
-        List<String> company_admins,
-        List<String> company_members,
-        List<String> group_owners,
-        List<String> group_admins,
-        List<String> group_write_members,
-        List<String> group_members,
-        LocalDate DateOfBirth,
-        String PhoneNumber
-
+        String clientName,
+        String passwdEncrypted,
+        String clientEmail,
+        List<String> companyOwners,
+        List<String> companyAdmins,
+        List<String> companyMembers,
+        List<String> groupOwners,
+        List<String> groupAdmins,
+        List<String> groupWriteMembers,
+        List<String> groupMembers,
+        LocalDate dateOfBirth,
+        String phoneNumber
 )
 {
     private static ArrayList<String> getArrayList(String[] arr)
@@ -39,17 +38,17 @@ public record Client(
         this(
                 row.getCells("default","version").get(0).getValue().toStringUtf8(),
                 row.getCells("default","clientName").get(0).getValue().toStringUtf8(),
-                row.getCells("default","passwd_encrypted").get(0).getValue().toStringUtf8(),
+                row.getCells("default","passwdEncrypted").get(0).getValue().toStringUtf8(),
                 clientEmail,
-                getArrayList(row.getCells("default","company_owners").get(0).getValue().toStringUtf8().split(";;")),
-                getArrayList(row.getCells("default","company_admins").get(0).getValue().toStringUtf8().split(";;")),
-                getArrayList(row.getCells("default","company_members").get(0).getValue().toStringUtf8().split(";;")),
-                getArrayList(row.getCells("default","group_owners").get(0).getValue().toStringUtf8().split(";;")),
-                getArrayList(row.getCells("default","group_admins").get(0).getValue().toStringUtf8().split(";;")),
-                getArrayList(row.getCells("default","group_write_members").get(0).getValue().toStringUtf8().split(";;")),
-                getArrayList(row.getCells("default","group_members").get(0).getValue().toStringUtf8().split(";;")),
-                LocalDate.parse(row.getCells("default","DateOfBirth").get(0).getValue().toStringUtf8()),
-                row.getCells("default","PhoneNumber").get(0).getValue().toStringUtf8()
+                getArrayList(row.getCells("default","companyOwners").get(0).getValue().toStringUtf8().split(";;")),
+                getArrayList(row.getCells("default","companyAdmins").get(0).getValue().toStringUtf8().split(";;")),
+                getArrayList(row.getCells("default","companyMembers").get(0).getValue().toStringUtf8().split(";;")),
+                getArrayList(row.getCells("default","groupOwners").get(0).getValue().toStringUtf8().split(";;")),
+                getArrayList(row.getCells("default","groupAdmins").get(0).getValue().toStringUtf8().split(";;")),
+                getArrayList(row.getCells("default","groupWriteMembers").get(0).getValue().toStringUtf8().split(";;")),
+                getArrayList(row.getCells("default","groupMembers").get(0).getValue().toStringUtf8().split(";;")),
+                LocalDate.parse(row.getCells("default","dateOfBirth").get(0).getValue().toStringUtf8()),
+                row.getCells("default","phoneNumber").get(0).getValue().toStringUtf8()
 
         );
     }

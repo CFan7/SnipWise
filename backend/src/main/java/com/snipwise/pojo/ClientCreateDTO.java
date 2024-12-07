@@ -7,8 +7,8 @@ public record ClientCreateDTO(
         String clientEmail,
         String passwd,
         @JsonFormat(pattern = "yyyy-MM-dd")
-        LocalDate  DateOfBirth,
-        String PhoneNumber
+        LocalDate dateOfBirth,
+        String phoneNumber
 )
 {
 }

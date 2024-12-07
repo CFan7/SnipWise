@@ -2,15 +2,16 @@ package com.snipwise.pojo;
 
 import com.google.cloud.bigtable.data.v2.models.Row;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 /*
 public record Company
 (
-    String company_name,
-    String company_subscription_type,
-    String company_subscription_expiration_time,
+    String companyName,
+    String companySubscriptionType,
+    String companySubscriptionExpirationTime,
     String owner,
     List<String> admins,
     List<String> members,
@@ -28,9 +29,9 @@ public record Company
     }
     public Company(Row row)
     {
-        this( row.getCells("default","company_name").get(0).getValue().toStringUtf8(),
-                row.getCells("default","company_subscription_type").get(0).getValue().toStringUtf8(),
-                row.getCells("default","company_subscription_expiration_time").get(0).getValue().toStringUtf8(),
+        this( row.getCells("default","companyName").get(0).getValue().toStringUtf8(),
+                row.getCells("default","companySubscriptionType").get(0).getValue().toStringUtf8(),
+                row.getCells("default","companySubscriptionExpirationTime").get(0).getValue().toStringUtf8(),
                 row.getCells("default","owner").get(0).getValue().toStringUtf8(),
                 getArrayList(row.getCells("default","admins").get(0).getValue().toStringUtf8().split(";;")),
                 getArrayList(row.getCells("default","members").get(0).getValue().toStringUtf8().split(";;")),
@@ -44,9 +45,9 @@ public record Company
 //rewrite it to a class
 public class Company
 {
-    private String company_name;
-    private String company_subscription_type;
-    private String company_subscription_expiration_time;
+    private String companyName;
+    private String companySubscriptionType;
+    private ZonedDateTime companySubscriptionExpirationTime;
     private String owner;
     private List<String> admins;
     private List<String> members;
@@ -61,11 +62,15 @@ public class Company
         }
         return new ArrayList<>(Arrays.asList(arr));
     }
-    public Company(String company_name, String company_subscription_type, String company_subscription_expiration_time, String owner, List<String> admins, List<String> members, List<String> groups, String version)
+    public Company(String version,
+            String company_name,
+                   String company_subscription_type,
+                   ZonedDateTime company_subscription_expiration_time,
+                   String owner, List<String> admins, List<String> members, List<String> groups)
     {
-        this.company_name = company_name;
-        this.company_subscription_type = company_subscription_type;
-        this.company_subscription_expiration_time = company_subscription_expiration_time;
+        this.companyName = company_name;
+        this.companySubscriptionType = company_subscription_type;
+        this.companySubscriptionExpirationTime = company_subscription_expiration_time;
         this.owner = owner;
         this.admins = admins;
         this.members = members;
@@ -74,26 +79,27 @@ public class Company
     }
     public Company(Row row)
     {
-        this.company_name = row.getCells("default","company_name").get(0).getValue().toStringUtf8();
-        this.company_subscription_type = row.getCells("default","company_subscription_type").get(0).getValue().toStringUtf8();
-        this.company_subscription_expiration_time = row.getCells("default","company_subscription_expiration_time").get(0).getValue().toStringUtf8();
+        this.version = row.getCells("default","version").get(0).getValue().toStringUtf8();
+        this.companyName = row.getCells("default","companyName").get(0).getValue().toStringUtf8();
+        this.companySubscriptionType = row.getCells("default","companySubscriptionType").get(0).getValue().toStringUtf8();
+        this.companySubscriptionExpirationTime = Misc.parseZonedDateTime(row.getCells("default","companySubscriptionExpirationTime").get(0).getValue());
         this.owner = row.getCells("default","owner").get(0).getValue().toStringUtf8();
         this.admins = getArrayList(row.getCells("default","admins").get(0).getValue().toStringUtf8().split(";;"));
         this.members = getArrayList(row.getCells("default","members").get(0).getValue().toStringUtf8().split(";;"));
         this.groups = getArrayList(row.getCells("default","groups").get(0).getValue().toStringUtf8().split(";;"));
-        this.version = row.getCells("default","version").get(0).getValue().toStringUtf8();
+
     }
 
-    public String company_name() {
-        return company_name;
+    public String companyName() {
+        return companyName;
     }
 
-    public String company_subscription_type() {
-        return company_subscription_type;
+    public String companySubscriptionType() {
+        return companySubscriptionType;
     }
 
-    public String company_subscription_expiration_time() {
-        return company_subscription_expiration_time;
+    public ZonedDateTime companySubscriptionExpirationTime() {
+        return companySubscriptionExpirationTime;
     }
 
     public String owner() {

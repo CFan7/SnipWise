@@ -9,10 +9,6 @@ import com.snipwise.pojo.Client;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 @Component
 public class ClientRepositoryImpl implements ClientRepository
 {
@@ -39,26 +35,26 @@ public class ClientRepositoryImpl implements ClientRepository
     @Override
     public void createClient(Client client) {
 
-        Row row = bigtableDataClient.readRow(usersTableID, client.client_email());
+        Row row = bigtableDataClient.readRow(usersTableID, client.clientEmail());
         if(row != null)
         {
             throw new ClientAlreadyExistException();
         }
         RowMutation mutation = RowMutation.create(
                 usersTableID,
-                client.client_email())
+                client.clientEmail())
                 .setCell("default","version",client.version())
-                .setCell("default","clientName",client.client_name())
-                .setCell("default","passwd_encrypted",client.passwd_encrypted())
-                .setCell("default", "company_owners",String.join(";;",client.company_owners()))
-                .setCell("default","company_admins",String.join(";;",client.company_admins()))
-                .setCell("default","company_members",String.join(";;",client.company_members()))
-                .setCell("default","group_owners",String.join(";;",client.group_owners()))
-                .setCell("default","group_admins",String.join(";;",client.group_admins()))
-                .setCell("default","group_write_members",String.join(";;",client.group_write_members()))
-                .setCell("default","group_members",String.join(";;",client.group_members()))
-                .setCell("default","DateOfBirth",client.DateOfBirth().toString())
-                .setCell("default","PhoneNumber",client.PhoneNumber());;
+                .setCell("default","clientName",client.clientName())
+                .setCell("default","passwdEncrypted",client.passwdEncrypted())
+                .setCell("default", "companyOwners",String.join(";;",client.companyOwners()))
+                .setCell("default","companyAdmins",String.join(";;",client.companyAdmins()))
+                .setCell("default","companyMembers",String.join(";;",client.companyMembers()))
+                .setCell("default","groupOwners",String.join(";;",client.groupOwners()))
+                .setCell("default","groupAdmins",String.join(";;",client.groupAdmins()))
+                .setCell("default","groupWriteMembers",String.join(";;",client.groupWriteMembers()))
+                .setCell("default","groupMembers",String.join(";;",client.groupMembers()))
+                .setCell("default","dateOfBirth",client.dateOfBirth().toString())
+                .setCell("default","phoneNumber",client.phoneNumber());;
 
         bigtableDataClient.mutateRow(mutation);
     }
@@ -72,22 +68,22 @@ public class ClientRepositoryImpl implements ClientRepository
                 .filter(Filters.FILTERS.value().range().startClosed(String.valueOf(currentVersion)).endOpen(String.valueOf(currentVersion + 1)));
         // Optimistic Locking
         ConditionalRowMutation conditionalRowMutation =
-                ConditionalRowMutation.create(usersTableID, client.client_email())
+                ConditionalRowMutation.create(usersTableID, client.clientEmail())
                         .condition(filter)
                         .then(
                                 Mutation.create()
                                         .setCell("default","version",String.valueOf(currentVersion + 1))
-                                        .setCell("default","clientName",client.client_name())
-                                        .setCell("default","passwd_encrypted",client.passwd_encrypted())
-                                        .setCell("default", "company_owners",String.join(";;",client.company_owners()))
-                                        .setCell("default","company_admins",String.join(";;",client.company_admins()))
-                                        .setCell("default","company_members",String.join(";;",client.company_members()))
-                                        .setCell("default","group_owners",String.join(";;",client.group_owners()))
-                                        .setCell("default","group_admins",String.join(";;",client.group_admins()))
-                                        .setCell("default","group_write_members",String.join(";;",client.group_write_members()))
-                                        .setCell("default","group_members",String.join(";;",client.group_members()))
-                                        .setCell("default","DateOfBirth",client.DateOfBirth().toString())
-                                        .setCell("default","PhoneNumber",client.PhoneNumber())
+                                        .setCell("default","clientName",client.clientName())
+                                        .setCell("default","passwdEncrypted",client.passwdEncrypted())
+                                        .setCell("default", "companyOwners",String.join(";;",client.companyOwners()))
+                                        .setCell("default","companyAdmins",String.join(";;",client.companyAdmins()))
+                                        .setCell("default","companyMembers",String.join(";;",client.companyMembers()))
+                                        .setCell("default","groupOwners",String.join(";;",client.groupOwners()))
+                                        .setCell("default","groupAdmins",String.join(";;",client.groupAdmins()))
+                                        .setCell("default","groupWriteMembers",String.join(";;",client.groupWriteMembers()))
+                                        .setCell("default","groupMembers",String.join(";;",client.groupMembers()))
+                                        .setCell("default","dateOfBirth",client.dateOfBirth().toString())
+                                        .setCell("default","phoneNumber",client.phoneNumber())
                         );
 
         boolean mutationApplied = bigtableDataClient.checkAndMutateRow(conditionalRowMutation);
