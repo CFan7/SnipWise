@@ -1,20 +1,21 @@
 // src/pages/RegisterLogin.js
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import "./RegisterLogin.css";
 import axiosInstance from "../../api/axiosInstance";
+import { UserContext } from "../../context/UserContext";
 
-const RegisterLogin = ({}) => {
-  const [isRegistering, setIsRegistering] = useState(true); // controls whether the user is registering or logging in
+const RegisterLogin = () => {
+  const [isRegistering, setIsRegistering] = useState(true);
   const [formData, setFormData] = useState({
-    username: "",
-    dob: "",
-    client_email: "",
-    phone: "",
+    clientName: "",
+    dateOfBirth: "",
+    clientEmail: "",
+    phoneNumber: "",
     passwd: ""
   });
-  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
+  const { login } = useContext(UserContext); 
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -22,38 +23,46 @@ const RegisterLogin = ({}) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrorMessage(""); // Clear previous errors
 
     try {
+      let response;
       if (isRegistering) {
-        // Registration API call
-        const response = await axiosInstance.post("/clients", formData);
-        console.log("Registration successful:", response.data);
-        alert("Registration successful!");
+        response = await axiosInstance.post("/clients", {
+          clientName: formData.clientName,
+          dateOfBirth: formData.dateOfBirth,
+          clientEmail: formData.clientEmail,
+          phoneNumber: formData.phoneNumber,
+          passwd: formData.passwd
+        });
+        alert(`Registration successful! Please login with your email: ${response.data.clientEmail}`);
+        setIsRegistering(false);
+        
       } else {
-        // Login API call
-        const response = await axiosInstance.post("/clients/login", {
-          client_email: formData.client_email,
+        response = await axiosInstance.post("/clients/login", {
+          clientEmail: formData.clientEmail,
           passwd: formData.passwd,
         });
-        console.log("Login successful:", response.data);
         alert("Login successful!");
+
+        const { clientEmail, jwt, expirationTime } = response.data;
+
+        // Store the token and expiration time in local storage
+        await login({ jwt, expirationTime });
+
+        navigate("/create");
       }
 
-      // Navigate to the create URL page upon success
-      navigate("/create");
     } catch (error) {
       if (error.response) {
         if (error.response.status === 401) {
-          // Handle 401 Unauthorized
-          setErrorMessage("Incorrect username or password!");
+          alert("Incorrect username or password!");
+        } else if (error.response.status === 409) {
+          alert("User already exists with this email!");
         } else {
-          // Handle other errors
-          setErrorMessage(error.response.data.message || "An error occurred");
+          alert(error.response.data.message || "An error occurred");
         }
       } else {
-        // Handle network or other errors
-        setErrorMessage("Unable to connect to the server. Please try again.");
+        alert(error.response.status + "Unable to connect to the server. Please try again.");
       }
     }
   };
@@ -83,8 +92,8 @@ const RegisterLogin = ({}) => {
             <label>Username</label>
             <input
               type="text"
-              name="username"
-              value={formData.username}
+              name="clientName"
+              value={formData.clientName}
               onChange={handleChange}
               required
             />
@@ -92,8 +101,8 @@ const RegisterLogin = ({}) => {
             <label>Date of Birth</label>
             <input
               type="date"
-              name="dob"
-              value={formData.dob}
+              name="dateOfBirth"
+              value={formData.dateOfBirth}
               onChange={handleChange}
               required
             />
@@ -101,8 +110,8 @@ const RegisterLogin = ({}) => {
             <label>Phone</label>
             <input
               type="tel"
-              name="phone"
-              value={formData.phone}
+              name="phoneNumber"
+              value={formData.phoneNumber}
               onChange={handleChange}
               required
             />
@@ -112,8 +121,8 @@ const RegisterLogin = ({}) => {
         <label>Email</label>
         <input
           type="email"
-          name="client_email"
-          value={formData.client_email}
+          name="clientEmail"
+          value={formData.clientEmail}
           onChange={handleChange}
           required
         />
@@ -129,8 +138,6 @@ const RegisterLogin = ({}) => {
 
         <button type="submit">Submit</button>
       </form>
-
-      {errorMessage && <p className="error-message">{errorMessage}</p>}
     </div>
   );
 };
