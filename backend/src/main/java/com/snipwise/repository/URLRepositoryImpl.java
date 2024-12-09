@@ -7,10 +7,12 @@ import com.snipwise.exception.URLRecordNotExistException;
 import com.snipwise.pojo.URL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import java.util.logging.Logger;
 
 @Component
 public class URLRepositoryImpl implements URLRepository
 {
+
 
     @Autowired
     BigtableDataClient bigtableDataClient;

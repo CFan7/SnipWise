@@ -3,6 +3,7 @@ package com.snipwise.service;
 import com.snipwise.exception.*;
 import com.snipwise.pojo.*;
 import com.snipwise.repository.URLRepository;
+import com.snipwise.repository.URLRepositoryImpl;
 import io.fusionauth.jwt.Verifier;
 import io.fusionauth.jwt.domain.JWT;
 import io.fusionauth.jwt.hmac.HMACVerifier;
@@ -12,10 +13,12 @@ import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 @Service
 public class URLServiceImpl implements URLService
 {
+    private static final Logger logger = Logger.getLogger(URLServiceImpl.class.getName());
     @Autowired
     private ClientService clientService;
     @Autowired
@@ -37,7 +40,10 @@ public class URLServiceImpl implements URLService
             {
                 shortURL = shortURL.substring(shortURL.indexOf("//")+2);
             }
+            Long start = System.currentTimeMillis();
             URL query_result = urlRepository.getRecordByShortURL(shortURL);
+            Long end = System.currentTimeMillis();
+            logger.info("Time taken to get URL record: "+(end-start)+"ms");
             if (!query_result.isActivated())
             {
                 throw new URLRecordNotActivatedException();

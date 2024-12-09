@@ -28,8 +28,15 @@ public class ClientController {
     {
         try
         {
+
+
             ClientCreateResponseDTO client_create_responseDTO = clientService.createClient(client_create_dto);
+
             return ResponseEntity.status(HttpStatus.CREATED).body(client_create_responseDTO);
+
+
+
+
         } catch (ClientAlreadyExistException e)
         {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(null);

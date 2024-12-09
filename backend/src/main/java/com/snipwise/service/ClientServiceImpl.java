@@ -335,10 +335,10 @@ public class ClientServiceImpl implements ClientService
             throw new ClientNotExistException();
         }
         Signer signer = HMACSigner.newSHA256Signer(JWT_SECRET);
-        ZonedDateTime zonedDateTime = ZonedDateTime.now(ZoneOffset.UTC);
+        ZonedDateTime zonedDateTime = ZonedDateTime.now(ZoneOffset.UTC).plusMinutes(15);
         JWT jwt = new JWT().setIssuer("snip-wise.com")
                 .setSubject(client.clientEmail())
-                .setExpiration(ZonedDateTime.now(ZoneOffset.UTC).plusMinutes(15));
+                .setExpiration(zonedDateTime);
         String encodedJWT = JWT.getEncoder().encode(jwt, signer);
         return new ClientLoginResponseDTO(
                 client.clientEmail(),
