@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+// src/App.js
+import React, { useContext } from "react";
 import { BrowserRouter as Router, Route, Routes, Link, Navigate } from "react-router-dom";
 import Home from "./app/Home/Home";
 import AboutUs from "./app/AboutUs/Aboutus";
@@ -7,19 +8,35 @@ import RegisterLogin from "./app/RegisterLogin/RegisterLogin";
 import CreateShortenUrl from "./app/CreateShortenUrl/CreateShortenUrl";
 import Account from "./app/Account/Account";
 import "./App.css";
+import { UserProvider, UserContext } from "./context/UserContext";
 
 function App() {
-  const [user, setUser] = useState(null);
+  return (
+    <UserProvider>
+      <AppContent />
+    </UserProvider>
+  );
+}
+
+function AppContent() {
+  const { token, login, loading } = useContext(UserContext);
 
   const handleLogin = (userInfo) => {
-    setUser(userInfo);
+    login(userInfo);
   };
+
+  if (loading) {
+    // When the token is being checked, display a loading message
+    return <div>Loading...</div>;
+  }
+
+  const isLoggedIn = !!token;
 
   return (
     <Router>
       <div className="App">
         <nav className="navbar">
-          {user ? (
+          {isLoggedIn ? (
             <>
               <Link to="/create">Create Shorten URL</Link>
               <Link to="/retrieve">Retrieve URL</Link>
@@ -40,8 +57,8 @@ function App() {
           <Route path="/about" element={<AboutUs />} />
           <Route path="/plans" element={<Plans />} />
           <Route path="/register" element={<RegisterLogin onLogin={handleLogin} />} />
-          <Route path="/create" element={user ? <CreateShortenUrl /> : <Navigate to="/" />} />
-          <Route path="/account" element={user ? <Account user={user} /> : <Navigate to="/" />} />
+          <Route path="/create" element={isLoggedIn ? <CreateShortenUrl /> : <Navigate to="/" />} />
+          <Route path="/account" element={isLoggedIn ? <Account /> : <Navigate to="/" />} />
         </Routes>
       </div>
     </Router>
