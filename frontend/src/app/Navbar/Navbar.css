@@ -1,0 +1,15 @@
+/* src/pages/Navbar.css */
+.navbar {
+    background-color: transparent; /* 배경을 투명으로 설정 */
+    display: flex;
+    justify-content: space-around;
+    padding: 20px 0;
+    position: absolute; /* 상단에 고정 */
+    width: 100%;
+    z-index: 1000; /* 다른 요소 위에 표시 */
+}
+
+.navbar a {
+    color: white; /* 텍스트 색상 */
+    text-decoration: none; /* 밑줄 제거 */
+}

@@ -7,7 +7,7 @@
 
 body {
   font-family: Arial, sans-serif;
-  background-color: #ffffff;
+  background-color: #ffffff; /* 필요에 따라 조정 */
 }
 
 .App {
@@ -18,15 +18,18 @@ body {
   display: flex;
   justify-content: space-around;
   padding: 10px;
-  background-color: #333;
+  background-color: transparent; /* 배경을 투명으로 변경 */
+  position: absolute; /* 상단 고정 */
+  width: 100%; /* 전체 너비로 설정 */
+  z-index: 1000; /* 다른 요소 위에 표시 */
 }
 
 .navbar a {
-  color: white;
+  color: white; /* 링크 텍스트 색상 */
   text-decoration: none;
   padding: 10px;
 }
 
 .navbar a:hover {
-  background-color: #555;
+  background-color: transparent; /* 호버 시 배경 투명 유지 */
 }

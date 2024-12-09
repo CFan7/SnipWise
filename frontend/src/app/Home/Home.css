@@ -1,28 +1,35 @@
 /* src/pages/Home.css */
-  .home-container {
-    max-width: 800px;
-    margin: 50px auto;
-    padding: 20px;
-    text-align: center;
-    font-family: Arial, sans-serif;
-  }
-  
-  .home-images {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px; /* the gap between two images */
-    margin-top: 250px; /* make the region of images goes down */
-  }
-  
-  .home-images img:first-child {
-    width: 800px; /* adjust the size of the first image */
-    height: auto;
-    margin-bottom: 20px;
-  }
-  
-  .home-images img:last-child {
-    width: 500px; /* adjust the size of the second image */
-    height: auto;
-  }
-  
+.home-container {
+  width: 100vw; /* 전체 너비 */
+  height: 100vh; /* 전체 높이 */
+  margin: 0; /* 여백 없이 */
+  padding: 40px; /* 필요한 경우 패딩 추가 */
+  text-align: center;
+  font-family: Arial, sans-serif;
+  background-size: cover; 
+  background-position: center; 
+  border-radius: 0; /* 둥글게 처리하지 않음 */
+}
+
+.home-images {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px; /* 이미지 간의 간격 */
+  margin-top: 250px; /* 이미지 영역 하단 여백 */
+}
+
+.home-images img {
+  width: 100%; /* 부모 요소에 맞게 너비 조정 */
+  max-width: 800px; /* 최대 너비 설정 */
+  height: auto; /* 비율 유지 */
+  border-radius: 10px;
+}
+
+.home-images img:first-child {
+  margin-bottom: 20px; /* 하단 여백 설정 */
+}
+
+.home-images img:last-child {
+  width: 500px; /* 두 번째 이미지 크기 조정 */
+}
