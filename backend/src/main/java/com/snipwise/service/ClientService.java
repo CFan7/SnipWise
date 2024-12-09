@@ -35,6 +35,9 @@ public interface ClientService
     List<String> getGroupOwners(String jwtString, String clientEmail);
     List<String> getGroupAdmins(String jwtString, String clientEmail);
     List<String> getGroupWriteMembers(String jwtString, String clientEmail);
+
+    ClientGetResponseDTO getClient(String email, String jwtString);
+
     Client getClient(String email);
     void updateClient(Client client);
 

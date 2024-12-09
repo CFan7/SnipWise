@@ -1,20 +1,22 @@
 package com.snipwise.pojo;
 
+import java.time.ZonedDateTime;
+
 /*public record URLCreateDTO
 {
     public String suffix;
-    public String original_url;
-    public Long expiration_time_unix;
+    public String originalUrl;
+    public Long expirationTimeUnix;
     public Boolean isActivated;
     public String groupId;
 
-    public URLCreateDTO(String suffix,String original_url,
+    public URLCreateDTO(String suffix,String originalUrl,
                         String expiration_time,
     Boolean isActivated,
     String groupId)
     {
         this.suffix = suffix;
-        this.original_url = original_url;
+        this.originalUrl = originalUrl;
         this.expiration_time = expiration_time;
         this.isActivated = isActivated;
         this.groupId = groupId;
@@ -24,8 +26,8 @@ package com.snipwise.pojo;
  */
 public record URLCreateDTO(
         String suffix,
-        String original_url,
-        Long expiration_time_unix,
+        String originalUrl,
+        ZonedDateTime expirationTime,
         Boolean isActivated,
         String groupId
 )

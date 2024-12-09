@@ -3,6 +3,7 @@ package com.snipwise.service;
 import com.snipwise.exception.*;
 import com.snipwise.pojo.*;
 import com.snipwise.repository.URLRepository;
+import com.snipwise.repository.URLRepositoryImpl;
 import io.fusionauth.jwt.Verifier;
 import io.fusionauth.jwt.domain.JWT;
 import io.fusionauth.jwt.hmac.HMACVerifier;
@@ -10,11 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.time.ZonedDateTime;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 @Service
 public class URLServiceImpl implements URLService
 {
+    private static final Logger logger = Logger.getLogger(URLServiceImpl.class.getName());
     @Autowired
     private ClientService clientService;
     @Autowired
@@ -36,14 +40,17 @@ public class URLServiceImpl implements URLService
             {
                 shortURL = shortURL.substring(shortURL.indexOf("//")+2);
             }
+            Long start = System.currentTimeMillis();
             URL query_result = urlRepository.getRecordByShortURL(shortURL);
+            Long end = System.currentTimeMillis();
+            logger.info("Time taken to get URL record: "+(end-start)+"ms");
             if (!query_result.isActivated())
             {
                 throw new URLRecordNotActivatedException();
             }
             else
             {
-                return query_result.original_url();
+                return query_result.originalUrl();
             }
         }
         catch (URLRecordNotExistException e)
@@ -91,8 +98,8 @@ public class URLServiceImpl implements URLService
         {
             throw new ClientUnauthorizedException();
         }
-        Long current_time_s = System.currentTimeMillis() / 1000;
-        if (entity.expiration_time_unix() < current_time_s)
+        ZonedDateTime current_time = ZonedDateTime.now();
+        if (entity.expirationTime().isBefore(current_time))
         {
             throw new IllegalArgumentException("Expiration time is in the past");
         }
@@ -130,8 +137,8 @@ public class URLServiceImpl implements URLService
         }
         URL urlEntity = new URL(
                 short_url,
-                entity.original_url(),
-                entity.expiration_time_unix(),
+                entity.originalUrl(),
+                entity.expirationTime(),
                 entity.isActivated(),
                 entity.groupId()
         );

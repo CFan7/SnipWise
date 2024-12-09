@@ -1,13 +1,12 @@
 package com.snipwise.pojo;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.ZonedDateTime;
 
 public record CompanyCreateResponseDTO
         (
-                String company_name,
-                String company_subscription_type,
-                String company_subscription_expiration_time
+                String companyName,
+                String companySubscriptionType,
+                ZonedDateTime companySubscriptionExpirationTime
         )
 {
 }

@@ -76,7 +76,7 @@ public class GroupServiceImpl implements GroupService
 
         Group group = new Group("0",
                 uuid,
-                groupCreateDTO.group_name,
+                groupCreateDTO.groupName,
                 companyName,
                 clientEmail,
                 admins,

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 
 
@@ -29,9 +30,9 @@ public class CompanyServiceImpl implements CompanyService
     @Override
     public void addMember(String jwtString, String companyName, CompanyAddMemberDTO companyAddMemberDTO)
     {
-        String jwtString_pure = jwtString.substring(7);// remove "Bearer "
+        String jwtStringPure = jwtString.substring(7);// remove "Bearer "
         Verifier verifier = HMACVerifier.newVerifier(JWT_SECRET);
-        JWT jwt = JWT.getDecoder().decode(jwtString_pure, verifier);
+        JWT jwt = JWT.getDecoder().decode(jwtStringPure, verifier);
         String clientEmail_requester = jwt.subject;
         String clientEmail = companyAddMemberDTO.email();
 
@@ -52,7 +53,7 @@ public class CompanyServiceImpl implements CompanyService
         {
             company.members().add(clientEmail);
             Client client = clientService.getClient(clientEmail);
-            client.company_members().add(companyName);
+            client.companyMembers().add(companyName);
             clientService.updateClient(client);
             companyRepository.updateCompany(company);
         }
@@ -71,14 +72,14 @@ public class CompanyServiceImpl implements CompanyService
 
     public CompanyCreateResponseDTO createCompany(String jwtString, CompanyCreateDTO companyCreateDTO)
     {
-        String jwtString_pure = jwtString.substring(7);// remove "Bearer "
+        String jwtStringPure = jwtString.substring(7);// remove "Bearer "
         Verifier verifier = HMACVerifier.newVerifier(JWT_SECRET);
 
         // If jwt is invalid or has expired, will throw an exception here
-        JWT jwt = JWT.getDecoder().decode(jwtString_pure, verifier);
+        JWT jwt = JWT.getDecoder().decode(jwtStringPure, verifier);
 
         String client_email = jwt.subject;
-        if(companyRepository.isCompanyExists(companyCreateDTO.company_name()))
+        if(companyRepository.isCompanyExists(companyCreateDTO.companyName()))
         {
             throw new CompanyAlreadyExistException();
         }
@@ -92,38 +93,39 @@ public class CompanyServiceImpl implements CompanyService
         members.add(client_email);
 
         Company company = new Company(
-                companyCreateDTO.company_name(),
+                "0",
+                companyCreateDTO.companyName(),
                 "free",
-                "na",
+                ZonedDateTime.parse("9999-12-31T23:59:59Z"),
                 client_email,
                 admins,
                 members,
-                new ArrayList<>(),
-                "0"
+                new ArrayList<>()
+
         );
         companyRepository.createCompany(company);
-        clientService.initClientForCompany(client_email,company.company_name());
+        clientService.initClientForCompany(client_email,company.companyName());
 
         return new CompanyCreateResponseDTO(
-                company.company_name(),
-                company.company_subscription_type(),
-                company.company_subscription_expiration_time()
+                company.companyName(),
+                company.companySubscriptionType(),
+                company.companySubscriptionExpirationTime()
         );
     }
     @Override
     public void updateMember(String jwtString, String companyName, String clientEmail, CompanyModifyMemberDTO companyModifyMemberDTO)
     {
-        String jwtString_pure = jwtString.substring(7);// remove "Bearer "
+        String jwtStringPure = jwtString.substring(7);// remove "Bearer "
         Verifier verifier = HMACVerifier.newVerifier(JWT_SECRET);
-        JWT jwt = JWT.getDecoder().decode(jwtString_pure, verifier);
-        String clientEmail_requester = jwt.subject;
+        JWT jwt = JWT.getDecoder().decode(jwtStringPure, verifier);
+        String clientEmailRequester = jwt.subject;
         String role = companyModifyMemberDTO.role();
         Company company = companyRepository.getCompany(companyName);//throw exception if company not exist
         if(!clientService.isClientExist(clientEmail))
         {
             throw new ClientNotExistException();
         }
-        if(!clientService.isClientExist(clientEmail_requester))
+        if(!clientService.isClientExist(clientEmailRequester))
         {
             throw new ClientNotExistException();
         }
@@ -132,7 +134,7 @@ public class CompanyServiceImpl implements CompanyService
             throw new IllegalArgumentException("client has to first be a member of the company");
         }
         Client client = clientService.getClient(clientEmail);
-        if (clientService.hasClientOwnerOfCompany(clientEmail_requester,companyName))
+        if (clientService.hasClientOwnerOfCompany(clientEmailRequester,companyName))
         {
             switch (role)
             {
@@ -142,13 +144,13 @@ public class CompanyServiceImpl implements CompanyService
                     {
                         company.admins().add(clientEmail);
                     }
-                    if(!client.company_owners().contains(companyName))
+                    if(!client.companyOwners().contains(companyName))
                     {
-                        client.company_owners().add(companyName);
+                        client.companyOwners().add(companyName);
                     }
-                    if(!client.company_admins().contains(companyName))
+                    if(!client.companyAdmins().contains(companyName))
                     {
-                        client.company_admins().add(companyName);
+                        client.companyAdmins().add(companyName);
                     }
                     break;
                 case "admin":
@@ -156,14 +158,14 @@ public class CompanyServiceImpl implements CompanyService
                     {
                         company.admins().add(clientEmail);
                     }
-                    if(!client.company_admins().contains(companyName))
+                    if(!client.companyAdmins().contains(companyName))
                     {
-                        client.company_admins().add(companyName);
+                        client.companyAdmins().add(companyName);
                     }
                     break;
                 case "member":
                     company.admins().remove(clientEmail);
-                    client.company_admins().remove(companyName);
+                    client.companyAdmins().remove(companyName);
                     break;
                 default:
                     throw new IllegalArgumentException("role must be either admin or member or owner");
@@ -184,25 +186,25 @@ public class CompanyServiceImpl implements CompanyService
         String jwtString_pure = jwtString.substring(7);// remove "Bearer "
         Verifier verifier = HMACVerifier.newVerifier(JWT_SECRET);
         JWT jwt = JWT.getDecoder().decode(jwtString_pure, verifier);
-        String clientEmail_requester = jwt.subject;
+        String clientEmailRequester = jwt.subject;
 
         Company company = companyRepository.getCompany(companyName);//throw exception if company not exist
         if(!clientService.isClientExist(clientEmail))
         {
             throw new ClientNotExistException();
         }
-        if(!clientService.isClientExist(clientEmail_requester))
+        if(!clientService.isClientExist(clientEmailRequester))
         {
             throw new ClientNotExistException();
         }
-        if(clientService.hasClientOwnerOfCompany(clientEmail_requester,companyName))
+        if(clientService.hasClientOwnerOfCompany(clientEmailRequester,companyName))
         {
             if (company.owner().equals(clientEmail))//owner can remove admins and members
             {
                 throw new IllegalArgumentException("owner cannot be removed");
             }
         }
-        else if(clientService.hasClientAdminOfCompany(clientEmail_requester,companyName))
+        else if(clientService.hasClientAdminOfCompany(clientEmailRequester,companyName))
         {
             if (company.admins().contains(clientEmail))///admin can remove members
             {
@@ -224,9 +226,9 @@ public class CompanyServiceImpl implements CompanyService
         company.admins().remove(clientEmail);
         company.members().remove(clientEmail);
         Client client = clientService.getClient(clientEmail);
-        client.company_members().remove(companyName);
-        client.company_admins().remove(companyName);
-        client.company_owners().remove(companyName);
+        client.companyMembers().remove(companyName);
+        client.companyAdmins().remove(companyName);
+        client.companyOwners().remove(companyName);
 
         companyRepository.updateCompany(company);
         clientService.updateClient(client);

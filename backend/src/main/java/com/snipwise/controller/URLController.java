@@ -19,12 +19,13 @@ public class URLController
     @Autowired
     private URLService urlService;
 
-    @GetMapping("/s/**")
-    public RedirectView getURLRequest(HttpServletRequest request)
+    @GetMapping("/s/{companyName}/{suffix}")
+    public RedirectView getURLRequest(@PathVariable String companyName, @PathVariable String suffix)
     {
         try
         {
-            String query_result = urlService.getOriginalURL(request.getRequestURL().toString());
+            String queryUrl = companyName+".snip-wise.com/s/"+suffix;
+            String query_result = urlService.getOriginalURL(queryUrl);
             return new RedirectView(query_result);
         }
         catch (URLRecordNotExistException | URLRecordNotActivatedException e)
@@ -39,8 +40,8 @@ public class URLController
     {
         try
         {
-            urlService.createURLRecord(jwtString,entity);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+            URLCreateResponseDTO urlCreateResponseDTO = urlService.createURLRecord(jwtString,entity);
+            return ResponseEntity.status(HttpStatus.OK).body(urlCreateResponseDTO);
         }
         catch(io.fusionauth.jwt.JWTExpiredException e)
         {

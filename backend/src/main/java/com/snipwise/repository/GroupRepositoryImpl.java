@@ -36,18 +36,18 @@ public class GroupRepositoryImpl implements GroupRepository
 
     @Override
     public void createGroup(Group group) {
-        Row row = bigtableDataClient.readRow(usersTableID, group.group_id());
+        Row row = bigtableDataClient.readRow(usersTableID, group.groupId());
         String group_members = String.join(";;", group.members());
         String group_admins = String.join(";;", group.admins());
-        String group_write_members = String.join(";;", group.write_members());
+        String group_write_members = String.join(";;", group.writeMembers());
 
-        RowMutation rowMutation = RowMutation.create(usersTableID, group.group_id())
+        RowMutation rowMutation = RowMutation.create(usersTableID, group.groupId())
                 .setCell("default","version",group.version())
-                .setCell("default","group_name",group.group_name())
-                .setCell("default","company_name",group.company_name())
+                .setCell("default","groupName",group.groupName())
+                .setCell("default","companyName",group.company_name())
                 .setCell("default","owner",group.owner())
                 .setCell("default","admins",group_admins)
-                .setCell("default","write_members",group_write_members)
+                .setCell("default","writeMembers",group_write_members)
                 .setCell("default","members",group_members)
                 ;
 
