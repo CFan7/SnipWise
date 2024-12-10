@@ -15,7 +15,7 @@ const RegisterLogin = () => {
     passwd: ""
   });
   const navigate = useNavigate();
-  const { login } = useContext(UserContext); 
+  const { login } = useContext(UserContext);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -47,7 +47,7 @@ const RegisterLogin = () => {
         const { clientEmail, jwt, expirationTime } = response.data;
 
         // Store the token and expiration time in local storage
-        await login({ jwt, expirationTime });
+        await login({ clientEmail, jwt, expirationTime });
 
         navigate("/create");
       }
