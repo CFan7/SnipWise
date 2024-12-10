@@ -7,6 +7,7 @@ import Plans from "./app/Plans/Plans";
 import RegisterLogin from "./app/RegisterLogin/RegisterLogin";
 import CreateShortenUrl from "./app/CreateShortenUrl/CreateShortenUrl";
 import Account from "./app/Account/Account";
+import Management from "./app/Management/Management";
 import "./App.css";
 import { UserProvider, UserContext } from "./context/UserContext";
 
@@ -40,6 +41,7 @@ function AppContent() {
             <>
               <Link to="/create">Create Shorten URL</Link>
               <Link to="/retrieve">Retrieve URL</Link>
+              <Link to="/management">Management</Link>
               <Link to="/analysis">Access Data Analysis</Link>
               <Link to="/account">Account</Link>
             </>
@@ -59,6 +61,7 @@ function AppContent() {
           <Route path="/register" element={<RegisterLogin onLogin={handleLogin} />} />
           <Route path="/create" element={isLoggedIn ? <CreateShortenUrl /> : <Navigate to="/" />} />
           <Route path="/account" element={isLoggedIn ? <Account /> : <Navigate to="/" />} />
+          <Route path="/management" element={isLoggedIn ? <Management /> : <Navigate to="/" />} />
         </Routes>
       </div>
     </Router>
