@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/companies")
@@ -48,6 +50,33 @@ public class CompanyController
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
+    @GetMapping("/{companyName}/urls")
+    public ResponseEntity<List<URL>> getCompanyURLs(
+            @RequestHeader("Authorization") String jwtString,
+            @PathVariable String companyName)
+    {
+        try
+        {
+            List<URL> urls = companyService.getCompanyURLs(jwtString, companyName);
+            return ResponseEntity.status(HttpStatus.OK).body(urls);
+        }
+        //jwt
+        catch (io.fusionauth.jwt.JWTException | ClientUnauthorizedException e)
+        {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+        //company name already exist || fail to write record to the db
+        catch (ClientNotExistException e)
+        {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+        //other exceptions
+        catch (Exception e)
+        {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
     @PostMapping("/{companyName}/members")
     public ResponseEntity<Void> addMember(
             @RequestHeader("Authorization") String jwtString,
