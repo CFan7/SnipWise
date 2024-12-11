@@ -1,6 +1,9 @@
 package com.snipwise.repository;
 
 import com.snipwise.pojo.Group;
+import com.snipwise.pojo.URL;
+
+import java.util.List;
 
 public interface GroupRepository
 {
@@ -9,6 +12,4 @@ public interface GroupRepository
 
     Boolean hasGroupExists(String groupId);
     Group getGroup(String groupId);
-
-
 }

@@ -2,10 +2,7 @@ package com.snipwise.controller;
 
 import com.snipwise.exception.ClientNotExistException;
 import com.snipwise.exception.ClientUnauthorizedException;
-import com.snipwise.pojo.CompanyGetGroupResponseDTO;
-import com.snipwise.pojo.Group;
-import com.snipwise.pojo.GroupCreateDTO;
-import com.snipwise.pojo.GroupCreateResponseDTO;
+import com.snipwise.pojo.*;
 import com.snipwise.service.CompanyService;
 import com.snipwise.service.CompanyServiceImpl;
 import com.snipwise.service.GroupService;
@@ -56,6 +53,28 @@ public class GroupController
         try
         {
             List<CompanyGetGroupResponseDTO>  result = companyService.getCompanyGroups(jwtString,companyName);
+            return ResponseEntity.status(HttpStatus.OK).body(result);
+        }
+        catch (JWTException | ClientUnauthorizedException e)
+        {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+        catch (ClientNotExistException e)
+        {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+    @GetMapping("/{groupId}/urls")
+    public ResponseEntity<List<URL>> getGroupURLs(@RequestHeader("Authorization") String jwtString, @PathVariable String companyName, @PathVariable String groupId)
+    {
+        try
+        {
+            List<URL>  result = groupService.getGroupURLs(jwtString,groupId);
             return ResponseEntity.status(HttpStatus.OK).body(result);
         }
         catch (JWTException | ClientUnauthorizedException e)

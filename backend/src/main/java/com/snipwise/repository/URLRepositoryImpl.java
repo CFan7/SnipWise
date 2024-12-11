@@ -1,13 +1,15 @@
 package com.snipwise.repository;
 
+import com.google.bigtable.v2.ReadRowsRequest;
 import com.google.cloud.bigtable.data.v2.BigtableDataClient;
-import com.google.cloud.bigtable.data.v2.models.Row;
-import com.google.cloud.bigtable.data.v2.models.RowMutation;
+import com.google.cloud.bigtable.data.v2.models.*;
 import com.snipwise.exception.URLRecordNotExistException;
 import com.snipwise.pojo.URL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import java.util.logging.Logger;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class URLRepositoryImpl implements URLRepository
@@ -16,8 +18,7 @@ public class URLRepositoryImpl implements URLRepository
 
     @Autowired
     BigtableDataClient bigtableDataClient;
-    String usersTableID = "snip-wise";
-
+    TableId usersTableID = TableId.of("snip-wise");
     @Override
     public URL getRecordByShortURL(String shortUrl)
     {
@@ -57,6 +58,27 @@ public class URLRepositoryImpl implements URLRepository
         RowMutation mutation = RowMutation.create(usersTableID,shortUrl).deleteRow();
 
         bigtableDataClient.mutateRow(mutation);
+    }
+
+    @Override
+    public List<URL> getGroupURLs(String groupId)
+    {
+        Filters.Filter filter = Filters.FILTERS.chain()
+                .filter(Filters.FILTERS.family().exactMatch("default"))
+                .filter(Filters.FILTERS.qualifier().exactMatch("groupId"))
+                .filter(Filters.FILTERS.value().exactMatch(groupId));
+
+        Query query = Query.create(usersTableID).filter(filter);
+        List<URL> urls = new ArrayList<>();
+        for (Row row : bigtableDataClient.readRows(query))
+        {
+            String key = row.getKey().toStringUtf8();
+            urls.add(getRecordByShortURL(key));
+        }
+
+
+
+        return urls;
     }
 
     /*
