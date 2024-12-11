@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 
 @Service
@@ -21,6 +22,8 @@ public class CompanyServiceImpl implements CompanyService
 {
     @Autowired
     private ClientService clientService;
+    @Autowired
+    private GroupService groupService;
 
     @Autowired
     private CompanyRepository companyRepository;
@@ -234,4 +237,49 @@ public class CompanyServiceImpl implements CompanyService
         clientService.updateClient(client);
     }
 
+    @Override
+    public List<CompanyGetGroupResponseDTO> getCompanyGroups(String jwtString, String companyName)
+    {
+        String jwtString_pure = jwtString.substring(7);// remove "Bearer "
+        Verifier verifier = HMACVerifier.newVerifier(JWT_SECRET);
+        JWT jwt = JWT.getDecoder().decode(jwtString_pure, verifier);
+        String clientEmail = jwt.subject;
+        if(!clientService.isClientExist(clientEmail))
+        {
+            throw new ClientNotExistException();
+        }
+        if(!clientService.hasClientMemberOfCompany(clientEmail,companyName))
+        {
+            throw new ClientUnauthorizedException();
+        }
+        Company company = companyRepository.getCompany(companyName);
+
+        List<CompanyGetGroupResponseDTO> groups = new ArrayList<>();
+        for (String groupId : company.groups())
+        {
+            Group group = groupService.getGroupByGroupId(groupId);
+            if (group.owner().equals(clientEmail))
+            {
+                groups.add(new CompanyGetGroupResponseDTO(groupId,group.groupName(),"owner"));
+            }
+            else if (group.admins().contains(clientEmail))
+            {
+                groups.add(new CompanyGetGroupResponseDTO(groupId,group.groupName(),"admin"));
+            }
+            else if (group.writeMembers().contains(clientEmail))
+            {
+                groups.add(new CompanyGetGroupResponseDTO(groupId,group.groupName(),"write_member"));
+            }
+            else if (group.members().contains(clientEmail))
+            {
+                groups.add(new CompanyGetGroupResponseDTO(groupId,group.groupName(),"member"));
+            }
+            else
+            {
+                ;
+            }
+
+        }
+        return groups;
+    }
 }
