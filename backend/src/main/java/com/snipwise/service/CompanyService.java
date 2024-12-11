@@ -5,6 +5,8 @@ import com.snipwise.pojo.CompanyModifyMemberDTO;
 import com.snipwise.pojo.CompanyCreateDTO;
 import com.snipwise.pojo.CompanyCreateResponseDTO;
 
+import java.util.List;
+
 public interface CompanyService {
 
 
@@ -17,5 +19,7 @@ public interface CompanyService {
     void updateMember(String jwtString, String companyName, String clientEmail, CompanyModifyMemberDTO companyModifyMemberDTO);
 
     void deleteMember(String jwtString, String companyName, String clientEmail);
+
+    List<List<String>> getCompanyGroups(String jwtString, String companyName);
 }
 
