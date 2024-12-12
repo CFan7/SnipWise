@@ -1,16 +1,34 @@
 .about-container {
-    max-width: 1000px;
-    margin: 0 auto;
-    text-align: left;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    color: #333;
-  }
-  
+  width: 100vw;                /* 전체 너비 */
+  height: 100vh;               /* 전체 높이 */
+  padding: 120px;
+  position: relative;          /* 배경과 콘텐츠 위치 조정 */
+  overflow: auto;            /* 넘침 방지 */
+}
+
+.about-background {
+  width: 100%;                 /* 전체 너비 */
+  height: 100%;                /* 전체 높이 */
+  background-size: cover;      /* 배경 이미지가 커버하도록 */
+  background-position: center;  /* 중앙에 배치 */
+}
+
+.content {
+  display: flex;               /* Flexbox 사용 */
+  flex-direction: column;      /* 세로 방향 정렬 */
+  justify-content: center;      /* 수직 중앙 정렬 */
+  align-items: center;          /* 수평 중앙 정렬 */
+  height: 100%;                /* 전체 높이에 맞게 */
+  padding: 20px;               /* 내부 여백 */
+  color: white;                /* 텍스트 색상 */
+  margin-top: 80px;           /* 네비게이션 바에 맞도록 여백 추가 */
+}
+
   .about-title {
     font-size: 3em;
     font-weight: bold;
     text-align: center;
-    margin-bottom: 40px;
+    margin-bottom: 80px;
   }
   
   .team-member {

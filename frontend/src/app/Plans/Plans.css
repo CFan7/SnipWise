@@ -2,11 +2,28 @@
 
 .plans-container {
   max-width: 1000px;
-  margin: 50px auto;
-  padding: 20px;
-  background-color: #ffffff;
+  margin: 0px auto;
+  padding: 120px;
+  background-color: transparent;
   text-align: center;
   font-family: "Arial", sans-serif;
+}
+
+.plans-background {
+  width: 100%;                 /* 전체 너비 */
+  height: 100%;                /* 전체 높이 */
+  background-size: cover;      /* 배경 이미지가 커버하도록 */
+  background-position: center;  /* 중앙에 배치 */
+}
+
+.content {
+  display: flex;               /* Flexbox 사용 */
+  flex-direction: column;      /* 세로 방향 정렬 */
+  justify-content: center;      /* 수직 중앙 정렬 */
+  align-items: center;          /* 수평 중앙 정렬 */
+  height: 200%;                /* 전체 높이에 맞게 */
+  padding: 120px;               /* 내부 여백 (필요 시 조정) */
+  color: black;                /* 텍스트 색상 (필요 시 조정) */
 }
 
 .plans-title {
@@ -19,13 +36,13 @@
 .plans-cards {
   display: flex;
   justify-content: space-around;
-  gap: 20px;
+  gap: 30px;
 }
 
 .plans-card {
-  background-color: #f9f9f9;
-  border-radius: 12px;
-  padding: 30px 20px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 20px;
+  padding: 80px 60px;
   width: 45%;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
 }

@@ -1,15 +1,25 @@
-/* src/pages/Navbar.css */
 .navbar {
-    background-color: transparent; /* 배경을 투명으로 설정 */
+    background-color: transparent; /* 배경을 투명하게 설정 */
     display: flex;
     justify-content: space-around;
     padding: 20px 0;
-    position: absolute; /* 상단에 고정 */
     width: 100%;
-    z-index: 1000; /* 다른 요소 위에 표시 */
+    position: relative; /* 배경 설정을 위해 상대적 */
 }
 
 .navbar a {
-    color: white; /* 텍스트 색상 */
-    text-decoration: none; /* 밑줄 제거 */
+    text-decoration: none;
+}
+
+.navbar i {
+    color: black; /* 기본 아이콘 색상 */
+    font-size: 24px; /* 아이콘 크기 */
+}
+
+.navbar i.active {
+    color: #007BFF; /* 홈이 아닐 때 파란색으로 변경 */
+}
+
+.navbar i:hover {
+    color: #0056b3; /* 호버 시 더 어두운 색상 */
 }
