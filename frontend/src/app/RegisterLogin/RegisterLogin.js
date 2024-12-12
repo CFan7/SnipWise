@@ -62,7 +62,7 @@ const RegisterLogin = () => {
           alert(error.response.data.message || "An error occurred. Please try again.");
         }
       } else {
-        alert(error.response.status + "Unable to connect to the server. Please try again.");
+        alert("Unable to connect to the server. Please try again.");
       }
     }
   };
