@@ -15,7 +15,7 @@ const RegisterLogin = () => {
     passwd: ""
   });
   const navigate = useNavigate();
-  const { login } = useContext(UserContext); 
+  const { login } = useContext(UserContext);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -37,13 +37,22 @@ const RegisterLogin = () => {
         });
         alert("Login successful!");
 
-        const { jwt, expirationTime } = response.data;
-        await login({ jwt, expirationTime });
+        const { clientEmail, jwt, expirationTime } = response.data;
+
+        // Store the token and expiration time in local storage
+        await login({ clientEmail, jwt, expirationTime });
+
         navigate("/create");
       }
     } catch (error) {
       if (error.response) {
-        alert(error.response.data.message || "An error occurred");
+        if (error.response && error.response.status === 401) {
+          alert("Incorrect username or password!");
+        } else if (error.response && error.response.status === 409) {
+          alert("User already exists with this email!");
+        } else {
+          alert(error.response.data.message || "An error occurred. Please try again.");
+        }
       } else {
         alert("Unable to connect to the server. Please try again.");
       }

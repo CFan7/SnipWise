@@ -6,9 +6,10 @@ import Plans from "./app/Plans/Plans";
 import RegisterLogin from "./app/RegisterLogin/RegisterLogin";
 import CreateShortenUrl from "./app/CreateShortenUrl/CreateShortenUrl";
 import Account from "./app/Account/Account";
-import Navbar from "./app/Navbar/Navbar"; // Navbar 컴포넌트 추가
+import Management from "./app/Management/Management";
 import "./App.css";
 import { UserProvider, UserContext } from "./context/UserContext";
+import UrlOverview from "./app/UrlOverview/UrlOverview";
 
 function App() {
   return (
@@ -34,14 +35,33 @@ function AppContent() {
   return (
     <Router>
       <div className="App">
-        <Navbar /> {/* 네비게이션 바 포함 */}
+        <nav className="navbar">
+          {isLoggedIn ? (
+            <>
+              <Link to="/create">Create Shorten URL</Link>
+              <Link to="/lookup">Lookup URL</Link>
+              <Link to="/management">Management</Link>
+              <Link to="/analysis">Access Data Analysis</Link>
+              <Link to="/account">Account</Link>
+            </>
+          ) : (
+            <>
+              <Link to="/">Home</Link>
+              <Link to="/about">About Us</Link>
+              <Link to="/plans">Plans</Link>
+              <Link to="/register">Register/Login</Link>
+            </>
+          )}
+        </nav>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<AboutUs />} />
           <Route path="/plans" element={<Plans />} />
           <Route path="/register" element={<RegisterLogin onLogin={handleLogin} />} />
           <Route path="/create" element={isLoggedIn ? <CreateShortenUrl /> : <Navigate to="/" />} />
+          <Route path="/lookup" element={isLoggedIn ? <UrlOverview /> : <Navigate to="/" />} />
           <Route path="/account" element={isLoggedIn ? <Account /> : <Navigate to="/" />} />
+          <Route path="/management" element={isLoggedIn ? <Management /> : <Navigate to="/" />} />
         </Routes>
       </div>
     </Router>

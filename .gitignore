@@ -36,3 +36,5 @@ startdb.bat
 
 # frontend modules
 frontend/node_modules/
+frontend/build/
+frontend/app.yaml
