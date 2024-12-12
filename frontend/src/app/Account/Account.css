@@ -1,23 +1,53 @@
-/* src/pages/Account.css */
 .account-container {
-    max-width: 600px;
-    margin: 50px auto;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-    text-align: center;
-  }
-  
-  .account-container h2 {
-    font-size: 2em;
-    color: #333;
-    margin-bottom: 20px;
-  }
-  
-  .account-container p {
-    font-size: 1.2em;
-    color: #555;
-    margin: 10px 0;
-  }
-  
+  max-width: 600px;
+  margin: 200px auto;
+  padding: 40px;
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  font-family: "Arial", sans-serif;
+  text-align: center;
+}
+
+.title {
+  font-size: 2.5em;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+.account-details {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  text-align: left;
+}
+
+.detail {
+  font-size: 1.2em;
+  color: #555;
+}
+
+.error {
+  font-size: 1.2em;
+  color: red;
+  margin-top: 20px;
+}
+
+.submit-button {
+  width: 150px;
+  padding: 12px;
+  font-size: 1.2em;
+  color: white;
+  background-color: #036BD0;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s;
+  margin: 0 auto;
+}
+
+.submit-button:hover {
+  background-color: #024BB5;
+  transform: scale(1.02);
+}

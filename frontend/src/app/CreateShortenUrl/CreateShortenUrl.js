@@ -89,11 +89,11 @@ const CreateShortenUrl = () => {
 
       const response = await axiosInstance.post("/url", payload);
       if (response.data && response.data.shortUrl) {
-        console.log("Shortened URL:", response.data);
+        // console.log("Shortened URL:", response.data);
         alert("URL shortened successfully! Short Url: " + response.data.shortUrl);
         setShortenedUrl(response.data.shortUrl);
       } else {
-        console.log("Failed to shorten URL:", response.data);
+        // console.log("Failed to shorten URL:", response.data);
         alert("Failed to shorten URL. Please try again.");
       }
     } catch (error) {
