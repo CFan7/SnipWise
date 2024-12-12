@@ -25,4 +25,12 @@ public class Misc
         // Long in BigTable
         return zonedDateTime.toInstant().getEpochSecond();
     }
+
+    public static long byteStringToLong(ByteString args) {
+        // Example ByteString
+        ByteString byteString = ByteString.copyFromUtf8("example");
+
+        // Convert ByteString to long
+        return byteString.asReadOnlyByteBuffer().getLong();
+    }
 }

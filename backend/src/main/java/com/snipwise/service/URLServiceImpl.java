@@ -2,8 +2,8 @@ package com.snipwise.service;
 
 import com.snipwise.exception.*;
 import com.snipwise.pojo.*;
+import com.snipwise.repository.DataAnalysisRepository;
 import com.snipwise.repository.URLRepository;
-import com.snipwise.repository.URLRepositoryImpl;
 import io.fusionauth.jwt.Verifier;
 import io.fusionauth.jwt.domain.JWT;
 import io.fusionauth.jwt.hmac.HMACVerifier;
@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -23,6 +24,8 @@ public class URLServiceImpl implements URLService
     private ClientService clientService;
     @Autowired
     private URLRepository urlRepository;
+    @Autowired
+    private DataAnalysisRepository dataAnalysisRepository;
 
     @Autowired
     GroupService groupService;
@@ -31,7 +34,7 @@ public class URLServiceImpl implements URLService
     private String JWT_SECRET;
 
     @Override
-    public String getOriginalURL(String shortURL)
+    public String getOriginalURL(String shortURL, String ipAddr)
     {
         try
         {
@@ -44,6 +47,7 @@ public class URLServiceImpl implements URLService
             URL query_result = urlRepository.getRecordByShortURL(shortURL);
             Long end = System.currentTimeMillis();
             logger.info("Time taken to get URL record: "+(end-start)+"ms");
+            dataAnalysisRepository.setRow(shortURL,ipAddr);
             if (!query_result.isActivated())
             {
                 throw new URLRecordNotActivatedException();
@@ -147,6 +151,30 @@ public class URLServiceImpl implements URLService
 
         return new URLCreateResponseDTO(urlEntity);
     }
+
+    @Override
+    public List<DataAnalysisRespondDTO> getURLData(String jwtString, String short_url) {
+        String jwtString_pure = jwtString.substring(7);
+        Verifier verifier = HMACVerifier.newVerifier(JWT_SECRET);
+
+        JWT jwt = JWT.getDecoder().decode(jwtString_pure, verifier);
+
+        String clientId = jwt.subject;
+        if (!clientService.isClientExist(clientId))
+        {
+            throw new ClientNotExistException();
+        }
+        URL urlEntity = getURLRecord(short_url);
+        String groupId = urlEntity.groupId();
+        if(!clientService.hasClientMemberOfGroup(clientId,groupId))
+        {
+            throw new ClientUnauthorizedException();
+        }
+
+        return dataAnalysisRepository.readData(short_url);
+
+    }
+
     @Override
     public void deleteURLRecord(String jwtString, String short_url) throws URLRecordNotExistException, ClientNotExistException, GroupNotExistException, ClientUnauthorizedException
     {
