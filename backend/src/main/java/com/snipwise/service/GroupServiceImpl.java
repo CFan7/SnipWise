@@ -4,7 +4,10 @@ import com.snipwise.exception.ClientNotExistException;
 import com.snipwise.exception.ClientUnauthorizedException;
 import com.snipwise.pojo.Group;
 import com.snipwise.pojo.GroupCreateDTO;
+import com.snipwise.pojo.URL;
 import com.snipwise.repository.GroupRepository;
+import com.snipwise.repository.URLRepository;
+import com.snipwise.repository.URLRepositoryImpl;
 import io.fusionauth.jwt.Verifier;
 import io.fusionauth.jwt.domain.JWT;
 import io.fusionauth.jwt.hmac.HMACVerifier;
@@ -13,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -21,6 +25,8 @@ public class GroupServiceImpl implements GroupService
     @Value("${JWT_SECRET}")
     private String JWT_SECRET;
 
+    @Autowired
+    URLRepository urlRepository;
     @Autowired
     ClientService clientService;
 
@@ -41,6 +47,7 @@ public class GroupServiceImpl implements GroupService
     {
         return groupRepository.getGroup(groupId);
     }
+
 
     @Override
     public Group createGroup(String jwtString, GroupCreateDTO groupCreateDTO, String companyName)
@@ -88,6 +95,25 @@ public class GroupServiceImpl implements GroupService
         companyService.addGroupToCompany(companyName, uuid);
         clientService.initClientForGroup(clientEmail, uuid);
         return group;
+    }
+    @Override
+    public List<URL> getGroupURLs(String jwtString, String groupId)
+    {
+        String jwtString_pure = jwtString.substring(7);// remove "Bearer "
+        Verifier verifier = HMACVerifier.newVerifier(JWT_SECRET);
+
+        JWT jwt = JWT.getDecoder().decode(jwtString_pure, verifier);
+
+        String clientEmail = jwt.subject;
+        if (!clientService.isClientExist(clientEmail))
+        {
+            throw new ClientNotExistException();
+        }
+        if (!clientService.hasClientMemberOfGroup(clientEmail, groupId))
+        {
+            throw new ClientUnauthorizedException();
+        }
+        return urlRepository.getGroupURLs(groupId);
     }
 
 }

@@ -1,12 +1,15 @@
 package com.snipwise.repository;
+import com.google.bigtable.v2.ReadRowsRequest;
 import com.google.cloud.bigtable.data.v2.BigtableDataClient;
-import com.google.cloud.bigtable.data.v2.models.Row;
-import com.google.cloud.bigtable.data.v2.models.RowMutation;
-import com.google.cloud.bigtable.data.v2.models.TableId;
+import com.google.cloud.bigtable.data.v2.models.*;
 import com.snipwise.exception.GroupNotExistException;
 import com.snipwise.pojo.Group;
+import com.snipwise.pojo.URL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class GroupRepositoryImpl implements GroupRepository

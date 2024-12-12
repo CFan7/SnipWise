@@ -282,4 +282,36 @@ public class CompanyServiceImpl implements CompanyService
         }
         return groups;
     }
+    @Override
+    public List<URL> getCompanyURLs(String jwtString, String companyName)
+    {
+        String jwtString_pure = jwtString.substring(7);// remove "Bearer "
+        Verifier verifier = HMACVerifier.newVerifier(JWT_SECRET);
+        JWT jwt = JWT.getDecoder().decode(jwtString_pure, verifier);
+        String clientEmail = jwt.subject;
+        if(!clientService.isClientExist(clientEmail))
+        {
+            throw new ClientNotExistException();
+        }
+        if(!clientService.hasClientMemberOfCompany(clientEmail,companyName))
+        {
+            throw new ClientUnauthorizedException();
+        }
+        Company company = companyRepository.getCompany(companyName);
+        List<URL> urls = new ArrayList<>();
+        for (String groupId : company.groups())
+        {
+            try
+            {
+                List<URL> urls_group = groupService.getGroupURLs(jwtString,groupId);
+                urls.addAll(urls_group);
+            }
+            catch (ClientUnauthorizedException e)
+            {
+                ;//The member may not have access to some certain groups, so just ignore the exception
+            }
+
+        }
+        return urls;
+    }
 }

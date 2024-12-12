@@ -18,5 +18,7 @@ public interface CompanyService {
     void deleteMember(String jwtString, String companyName, String clientEmail);
 
     List<CompanyGetGroupResponseDTO> getCompanyGroups(String jwtString, String companyName);
+
+    List<URL> getCompanyURLs(String jwtString, String companyName);
 }
 
