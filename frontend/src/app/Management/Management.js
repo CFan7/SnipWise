@@ -18,7 +18,7 @@ const Management = () => {
         const response = await axiosInstance.get(`/clients/${clientEmail}/access?type=company&role=owner`);
         const companyList = response.data;
         setCompanies(companyList);
-        console.log("Fetched companies:", companyList);
+        // console.log("Fetched companies:", companyList);
         if (companyList.length > 0) {
             setSelectedCompany(companyList[0]);
           }
@@ -34,7 +34,7 @@ const Management = () => {
     try {
       const response = await axiosInstance.post("/companies", { companyName: companyName });
       if (response.data) {
-        console.log("Company created successfully:", response.data);
+        // console.log("Company created successfully:", response.data);
         alert(`Company "${companyName}" created successfully!`);
         setCompanyName(""); // clear the input field
       } else {
@@ -53,10 +53,10 @@ const Management = () => {
   const handleGroupSubmit = async (e) => {
     e.preventDefault();
     try {
-        console.log("Selected company:", selectedCompany);
+        // console.log("Selected company:", selectedCompany);
       const response = await axiosInstance.post(`/companies/${selectedCompany}/groups`, { groupName: groupName});
       if (response.data) {
-        console.log("Group created successfully:", response.data);
+        // console.log("Group created successfully:", response.data);
         alert(`Group "${groupName}" created successfully under company "${selectedCompany}"!`);
         setGroupName("");
       } else {
