@@ -54,12 +54,12 @@ const RegisterLogin = () => {
 
     } catch (error) {
       if (error.response) {
-        if (error.response.status === 401) {
+        if (error.response && error.response.status === 401) {
           alert("Incorrect username or password!");
-        } else if (error.response.status === 409) {
+        } else if (error.response && error.response.status === 409) {
           alert("User already exists with this email!");
         } else {
-          alert(error.response.data.message || "An error occurred");
+          alert(error.response.data.message || "An error occurred. Please try again.");
         }
       } else {
         alert(error.response.status + "Unable to connect to the server. Please try again.");
