@@ -9,6 +9,7 @@ const UrlOverview = () => {
   const [selectedCompany, setSelectedCompany] = useState("");
   const [selectedGroup, setSelectedGroup] = useState("");
   const [urls, setUrls] = useState([]);
+  const [isFetched, setIsFetched] = useState(false);
 
   const clientEmail = localStorage.getItem('clientEmail');
 
@@ -54,11 +55,13 @@ const UrlOverview = () => {
   const handleCompanyChange = (e) => {
     setSelectedCompany(e.target.value);
     setUrls([]);
+    setIsFetched(false);
   };
 
   const handleGroupChange = (e) => {
     setSelectedGroup(e.target.value);
     setUrls([]);
+    setIsFetched(false);
   };
 
   const handleFetchUrls = async () => {
@@ -70,6 +73,8 @@ const UrlOverview = () => {
       } catch (error) {
         console.error("Failed to fetch urls:", error);
         setUrls([]);
+      } finally {
+        setIsFetched(true);
       }
     } else {
       alert("Please select a company and a group first.");
@@ -115,7 +120,7 @@ const UrlOverview = () => {
         <button className="submit-button" onClick={handleFetchUrls}>Fetch URLs</button>
       </div>
 
-      {urls.length > 0 ? (
+      {isFetched && (urls.length > 0 ? (
         <table className="url-table">
           <thead>
             <tr>
@@ -143,10 +148,8 @@ const UrlOverview = () => {
           </tbody>
         </table>
       ) : (
-        selectedCompany && selectedGroup && (
         <p>No URLs found for selected company and group. Try fetching again after some data is created.</p>
-        )
-      )}
+      ))}
     </div>
   );
 };
