@@ -11,6 +11,7 @@ import Management from "./app/Management/Management";
 import "./App.css";
 import { UserProvider, UserContext } from "./context/UserContext";
 import UrlOverview from "./app/UrlOverview/UrlOverview";
+import DataAnalysis from "./app/DataAnalysis/DataAnalysis";
 
 function App() {
   return (
@@ -43,7 +44,7 @@ function AppContent() {
               <Link to="/create">Create Shorten URL</Link>
               <Link to="/lookup">Lookup URL</Link>
               <Link to="/management">Management</Link>
-              <Link to="/analysis">Access Data Analysis</Link>
+              <Link to="/analysis">Data Analysis</Link>
               <Link to="/account">Account</Link>
             </>
           ) : (
@@ -64,6 +65,7 @@ function AppContent() {
           <Route path="/lookup" element={isLoggedIn ? <UrlOverview /> : <Navigate to="/" />} />
           <Route path="/account" element={isLoggedIn ? <Account /> : <Navigate to="/" />} />
           <Route path="/management" element={isLoggedIn ? <Management /> : <Navigate to="/" />} />
+          <Route path="/analysis" element={isLoggedIn ? <DataAnalysis /> : <Navigate to="/" />} />
         </Routes>
       </div>
     </Router>
