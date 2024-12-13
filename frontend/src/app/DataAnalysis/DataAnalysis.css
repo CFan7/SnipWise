@@ -1,0 +1,48 @@
+.data-analysis-container {
+    max-width: 1200px;
+    margin: 200px auto;
+    padding: 40px;
+    background-color: #f9f9f9;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    font-family: "Arial", sans-serif;
+    text-align: center;
+  }
+  
+  .data-analysis-title {
+    font-size: 2.5em;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 30px;
+  }
+  
+  .data-analysis-input {
+    padding: 10px;
+    width: 300px;
+    font-size: 1em;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+  }
+  
+  .data-analysis-button {
+    padding: 10px 20px;
+    margin-left: 10px;
+    font-size: 1.2em;
+    background-color: #036BD0;
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .data-analysis-button:hover {
+    background-color: #024BB5;
+  }
+  
+  .chart-container {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+  }  
+  
