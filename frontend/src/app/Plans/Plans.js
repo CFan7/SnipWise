@@ -1,10 +1,25 @@
 // src/pages/Plans.js
 import React from "react";
 import "./Plans.css";
+import subbackground from "../../assets/subbackground.jpg";
 
 const Plans = () => {
   return (
-    <div className="plans-container">
+      <div
+          className="plans-background"
+          style={{
+            backgroundImage: `url(${subbackground})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            height: '100vh',
+            margin: 0,
+            padding: 0,
+          }}
+      >
+    <div
+      className="plans-container"
+    >
+    
       <h1 className="plans-title">Our Plans</h1>
       <div className="plans-cards">
         <div className="plans-card">
@@ -34,6 +49,7 @@ const Plans = () => {
         </div>
       </div>
       <p className="contact-info">Contact us: contactus@snipwise.com</p>
+    </div>
     </div>
   );
 };

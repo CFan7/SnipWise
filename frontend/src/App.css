@@ -15,18 +15,36 @@ body {
 }
 
 .navbar {
+  background-color: transparent;
   display: flex;
   justify-content: space-around;
-  padding: 10px;
-  background-color: #333;
+  padding: 20px 0;
+  width: 100%;
+  position: relative;
+  font-family: "Arial Rounded MT Bold", Arial, sans-serif;
+  font-weight: bold;
 }
 
 .navbar a {
-  color: white;
   text-decoration: none;
-  padding: 10px;
+  color: rgb(40,84,216);
+  font-size: 18px;
+  transition: color 0.3s;
 }
 
 .navbar a:hover {
-  background-color: #555;
+  color: rgba(40,84,216, 0.8);
+}
+
+.navbar i {
+  color: rgb(40,84,216);
+  font-size: 24px;
+}
+
+.navbar i.active {
+  color: rgb(40,84,216);
+}
+
+.navbar i:hover {
+  color: rgba(40,84,216, 0.8);
 }
