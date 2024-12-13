@@ -25,7 +25,7 @@ const AboutUs = () => {
 
     return (
       <div
-      className="about-background" // 배경 스타일이 적용될 div
+      className="about-background"
       style={{
         backgroundImage: `url(${subbackground})`,
         backgroundSize: 'cover',
@@ -36,7 +36,7 @@ const AboutUs = () => {
       }}
       >
       <div className="about-container">
-        <h1 className="about-title">About Us</h1>
+        {/* <h1 className="about-title">About Us</h1> */}
         <img src={teamLogo} alt="Team Logo" className="team-logo" />
 
         <div className="mission-section">

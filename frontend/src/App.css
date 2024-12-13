@@ -7,7 +7,7 @@
 
 body {
   font-family: Arial, sans-serif;
-  background-color: #ffffff; /* 필요에 따라 조정 */
+  background-color: #ffffff;
 }
 
 .App {
@@ -15,21 +15,36 @@ body {
 }
 
 .navbar {
+  background-color: transparent;
   display: flex;
   justify-content: space-around;
-  padding: 10px;
-  background-color: transparent; /* 배경을 투명으로 변경 */
-  position: absolute; /* 상단 고정 */
-  width: 100%; /* 전체 너비로 설정 */
-  z-index: 1000; /* 다른 요소 위에 표시 */
+  padding: 20px 0;
+  width: 100%;
+  position: relative;
+  font-family: "Arial Rounded MT Bold", Arial, sans-serif; /* 圆润的字体 */
+  font-weight: bold; /* 加粗文字 */
 }
 
 .navbar a {
-  color: cornflowerblue; /* 링크 텍스트 색상 */
   text-decoration: none;
-  padding: 10px;
+  color: rgb(40,84,216); /* 使用指定的蓝色 */
+  font-size: 18px; /* 字体适当放大一些，让其更清晰 */
+  transition: color 0.3s;
 }
 
 .navbar a:hover {
-  background-color: transparent; /* 호버 시 배경 투명 유지 */
+  color: rgba(40,84,216, 0.8); /* 悬停时稍微变浅 */
+}
+
+.navbar i {
+  color: rgb(40,84,216);
+  font-size: 24px;
+}
+
+.navbar i.active {
+  color: rgb(40,84,216);
+}
+
+.navbar i:hover {
+  color: rgba(40,84,216, 0.8);
 }

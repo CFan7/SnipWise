@@ -24,11 +24,11 @@ function AppContent() {
   const { token, login, loading } = useContext(UserContext);
 
   const handleLogin = (userInfo) => {
-    login(userInfo); // UserContext의 login 함수 호출
+    login(userInfo);
   };
 
   if (loading) {
-    return <div>Loading...</div>; // 로딩 상태 표시
+    return <div>Loading...</div>;
   }
 
   const isLoggedIn = !!token;

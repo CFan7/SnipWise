@@ -92,7 +92,6 @@ const UrlOverview = () => {
           "Content-Type": "application/json"
         }
       });
-      // 删除成功后更新本地状态
       setUrls(prev => prev.filter(u => u.shortUrl !== shortUrl));
     } catch (error) {
       console.error("Failed to delete url:", error);

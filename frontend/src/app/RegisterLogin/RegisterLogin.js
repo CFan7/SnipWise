@@ -61,7 +61,7 @@ const RegisterLogin = () => {
 
   return (
         <div
-              className="plans-background" // 배경 스타일이 적용될 div
+              className="plans-background"
               style={{
                 backgroundImage: `url(${subbackground})`,
                 backgroundSize: 'cover',
@@ -72,8 +72,8 @@ const RegisterLogin = () => {
               }}
         >
     <div className="register-container">
-      <div className="content"> {/* 내부 컨텐츠 여백을 위한 div */}
-        <h2>{isRegistering ? "Register" : "Login"}</h2>
+      <div className="content"> {}
+        {/* <h2>{isRegistering ? "Register" : "Login"}</h2> */}
 
         <div className="toggle-buttons">
           <button
