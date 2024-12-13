@@ -21,19 +21,19 @@ body {
   padding: 20px 0;
   width: 100%;
   position: relative;
-  font-family: "Arial Rounded MT Bold", Arial, sans-serif; /* 圆润的字体 */
-  font-weight: bold; /* 加粗文字 */
+  font-family: "Arial Rounded MT Bold", Arial, sans-serif;
+  font-weight: bold;
 }
 
 .navbar a {
   text-decoration: none;
-  color: rgb(40,84,216); /* 使用指定的蓝色 */
-  font-size: 18px; /* 字体适当放大一些，让其更清晰 */
+  color: rgb(40,84,216);
+  font-size: 18px;
   transition: color 0.3s;
 }
 
 .navbar a:hover {
-  color: rgba(40,84,216, 0.8); /* 悬停时稍微变浅 */
+  color: rgba(40,84,216, 0.8);
 }
 
 .navbar i {

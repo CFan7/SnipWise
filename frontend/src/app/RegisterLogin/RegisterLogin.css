@@ -1,11 +1,9 @@
 /* src/pages/RegisterLogin.css */
-
   
-/* 각 페이지의 CSS 파일에 추가 */
 .register-container {
-  max-width: 2000px;   /* 최대 너비 설정 */
-  margin: 0px auto;  /* 중앙 정렬 */
-  padding: 20px;       /* 내부 여백 */
+  max-width: 2000px;
+  margin: 0px auto;
+  padding: 20px;
   background-color: transparent;
   border-radius: 12px;
   /*box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);*/
@@ -13,18 +11,17 @@
 }
 
 .register-background {
-  width: 100%;                 /* 전체 너비 */
-  height: 100%;                /* 전체 높이 */
-  background-size: cover;      /* 배경 이미지가 커버하도록 */
-  background-position: center;  /* 중앙에 배치 */
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
 }
 
 
 .content {
-  margin-top: 10px;  /* 네비게이션 바 높이만큼 하단 여백 추가 */
+  margin-top: 10px;
 }
 
-/* 버튼 및 폼 관련 스타일 */
 .toggle-buttons {
   display: flex;
   justify-content: center;
@@ -46,7 +43,7 @@
 }
 
 .toggle-button.active {
-  background-color: #2855d8; /* 활성 상태 색상 */
+  background-color: #2855d8;
   color: white;
 }
   .toggle-buttons {
@@ -68,7 +65,7 @@
   }
   
   .toggle-button.active {
-    background-color: #2855d8; /* 带有蓝色调的深蓝 */
+    background-color: #2855d8;
     color: white;
   }
   

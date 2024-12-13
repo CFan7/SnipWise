@@ -6,7 +6,7 @@ import subbackground from "../../assets/subbackground.jpg";
 const Plans = () => {
   return (
       <div
-          className="plans-background" // 배경 스타일이 적용될 div
+          className="plans-background"
           style={{
             backgroundImage: `url(${subbackground})`,
             backgroundSize: 'cover',
