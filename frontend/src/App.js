@@ -1,6 +1,5 @@
-// src/App.js
 import React, { useContext } from "react";
-import { BrowserRouter as Router, Route, Routes, Link, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Navigate , Link } from "react-router-dom";
 import Home from "./app/Home/Home";
 import AboutUs from "./app/AboutUs/Aboutus";
 import Plans from "./app/Plans/Plans";
@@ -29,7 +28,6 @@ function AppContent() {
   };
 
   if (loading) {
-    // When the token is being checked, display a loading message
     return <div>Loading...</div>;
   }
 
