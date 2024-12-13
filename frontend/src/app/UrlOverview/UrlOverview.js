@@ -81,6 +81,25 @@ const UrlOverview = () => {
     }
   };
 
+  const handleDelete = async (shortUrl) => {
+    if(!window.confirm(`Are you sure you want to delete the URL mapping for ${shortUrl}?`)) {
+      return;
+    }
+
+    try {
+      await axiosInstance.delete(`/url?shortUrl=${encodeURIComponent(shortUrl)}`, {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+      // 删除成功后更新本地状态
+      setUrls(prev => prev.filter(u => u.shortUrl !== shortUrl));
+    } catch (error) {
+      console.error("Failed to delete url:", error);
+      alert("Failed to delete the URL. Please check console for details.");
+    }
+  };
+
   return (
     <div className="overview-container">
       <h2 className="title">URL Overview</h2>
@@ -128,6 +147,7 @@ const UrlOverview = () => {
               <th>Short URL</th>
               <th>Expiration Time</th>
               <th>Is Activated</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -142,6 +162,21 @@ const UrlOverview = () => {
                   ) : (
                     <span className="activated-false">False</span>
                   )}
+                </td>
+                <td>
+                  <button 
+                    style={{ 
+                      backgroundColor: 'red', 
+                      color: 'white', 
+                      border: 'none', 
+                      borderRadius: '5px', 
+                      padding: '5px 10px', 
+                      cursor: 'pointer' 
+                    }}
+                    onClick={() => handleDelete(u.shortUrl)}
+                  >
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))}

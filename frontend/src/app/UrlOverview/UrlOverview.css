@@ -49,12 +49,24 @@
     border-collapse: collapse;
     margin-top: 30px;
     font-size: 1em;
+    table-layout: fixed; /* 使用固定布局 */
   }
   
   .url-table th, .url-table td {
     border: 1px solid #ccc;
     padding: 12px;
     text-align: left;
+    vertical-align: middle;
+    
+    /* 去掉不换行和省略号的限制 */
+    white-space: normal;
+    overflow-wrap: break-word; /* 自动换行 */
+    word-wrap: break-word;     /* 自动换行(兼容性考虑) */
+  }
+  
+  .url-table th:nth-child(1),
+  .url-table td:nth-child(1) {
+    width: 200px; /* 固定original url列的宽度 */
   }
   
   .url-table th {
@@ -69,4 +81,5 @@
   .activated-false {
     color: red;
     font-weight: bold;
-  }  
+  }
+  
